@@ -885,25 +885,25 @@ export default {
         return "$ " + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     },
     chg_method (e) {
-      this.$ga.event('method', 'type', this.travel_method, 'method-change')
+      this.$ga.event('method', 'method-change', 'type-' + this.travel_method, this.travel_method)
     },
     chg_line_from (e) {
-      this.$ga.event('fare', 'mtr-line-from', this.mtr_line_from, 'mtr-change')
+      this.$ga.event('fare', 'method-change', 'mtr-line-from-' + this.mtr_line_from, this.mtr_line_from)
     },
     chg_stn_from (e) {
-      this.$ga.event('fare', 'mtr-stn-from', this.mtr_stn_from, 'mtr-change')
+      this.$ga.event('fare', 'method-change', 'mtr-stn-from-' + this.mtr_stn_from, this.mtr_stn_from)
     },
     chg_line_to (e) {
-      this.$ga.event('fare', 'mtr-line-to', this.mtr_line_to, 'mtr-change')
+      this.$ga.event('fare', 'method-change', 'mtr-line-to-' + this.mtr_line_to, this.mtr_line_to)
     },
     chg_stn_to (e) {
-      this.$ga.event('fare', 'mtr-stn-to', this.mtr_stn_to, 'mtr-change')
+      this.$ga.event('fare', 'method-change', 'mtr-stn-to-' + this.mtr_stn_to, this.mtr_stn_to)
     },
     chg_dutyday (e) {
-      this.$ga.event('duty', 'duty-days', this.duty_days, 'duty-change')
+      this.$ga.event('duty', 'duty-change', 'duty-days-' + this.duty_days, this.duty_days)
     },
     chg_holiday (e) {
-      this.$ga.event('duty', 'duty-days', this.holiday_expense, 'duty-change')
+      this.$ga.event('holiday', 'holiday-change', 'holiday-days-' + this.holiday_expense, this.holiday_expense)
     }
   },
   created: function () {
