@@ -1,12 +1,17 @@
 <template>
   <div>
 
-    <div class="row">
-      <h2 class="text-center">補貼你有計</h2>
-      <p class="text-muted text-center"><small>交通補貼措施2017</small></p>
-    </div>
-    <hr>
-
+    <header class="row">
+      <div class="col-xs-12">
+        <p class="main-logo pull-left">
+          <a href="https://hk01.com/">
+            <img class="logo-hk01news" src="assets/img/hk01news-logo.png" alt="01新聞">
+          </a>
+        </p>
+        <h2 class="text-center">補貼你有計</h2>
+        <p class="text-muted text-center"><small>交通補貼措施2017</small></p>
+      </div>
+    </header>
 
 
 
@@ -15,7 +20,7 @@
 
       <div class="row">
         <div class="col-xs-12">
-          <p class="hint bg-info">首先你乘搭交通工具是...</p>
+          <p class="hint bg-info">1. 首先你乘搭交通工具是...</p>
         </div>
         <div class="col-xs-12 col-sm-8">
           <div class="a__option col-xs-6">
@@ -25,14 +30,14 @@
 
           <div class="a__option col-xs-6">
             <input type="radio" id="bus" value="bus" v-model="travel_method" v-on:change="chg_method">
-            <label for="bus">巴士/綠色小巴</label>
+            <label for="bus">其他</label>
           </div>
         </div>
       </div>
 
       <div class="row">
         <div class="col-xs-12">
-          <p class="hint bg-info">去程交通花費是...</p>
+          <p class="hint bg-info">2. 去程交通花費是...</p>
         </div>
       </div>
 
@@ -44,7 +49,7 @@
         </div>
         <div class="row">
           <div class="col-xs-6">
-            <p><label for="mtr_line_from" class="">起點路線</label></p>
+            <label for="mtr_line_from" class="">起點路線</label>
             <p>
             <select id="mtr_line_from" v-model="mtr_line_from" v-on:change="chg_line_from">
               <option v-for="option in mtr_lines_from" v-bind:value="option.ld">
@@ -56,7 +61,7 @@
 
 
           <div class="col-xs-6">
-            <p><label for="mtr_stn_from" class="">起點車站</label></p>
+            <label for="mtr_stn_from" class="">起點車站</label>
             <p>
             <select id="mtr_stn_from" v-model="mtr_stn_from" v-on:change="chg_stn_from">
               <option v-for="option in mtr_stns_from" v-bind:value="option.sd">
@@ -70,7 +75,7 @@
 
         <div class="row">
           <div class="col-xs-6">
-            <p><label for="mtr_line_to" class="">目的地在路線</label></p>
+            <label for="mtr_line_to" class="">終點路線</label>
             <p>
             <select id="mtr_line_to" v-model="mtr_line_to" v-on:change="chg_line_to">
               <option v-for="option in mtr_lines_to" v-bind:value="option.ld">
@@ -82,7 +87,7 @@
 
 
           <div class="col-xs-6">
-            <p><label for="mtr_stn_to" class="">目的地車站</label></p>
+            <label for="mtr_stn_to" class="">終點車站</label>
             <p>
             <select id="mtr_stn_to" v-model="mtr_stn_to" v-on:change="chg_stn_to">
               <option v-for="option in mtr_stns_to" v-bind:value="option.sd">
@@ -95,8 +100,8 @@
 
         <div class="row">
           <div class="col-xs-12 col-sm-4">
-            <p class="bg-warning">１程港鐵收費： $ {{ mtr_fee }}</p>
-            <p class="bg-success">來回程港鐵收費： $ {{ mtr_fee * 2 }}</p>
+            <p class="">來回票價*： <strong>$ {{ mtr_fee * 2 }}</strong> <small>（單程 $ {{ mtr_fee }}）</small></p>
+            <p class=""></p>
           </div>
         </div>
       </div>
@@ -104,18 +109,17 @@
 
       <div class="non-mtr-section" v-if="'mtr' != travel_method">
         <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label for="duty_expense" class="text-right">平均去程交通費用（＄）</label>
+          <div class="col-xs-7 col-sm-5">
+            <label for="duty_expense" class="lbl-vc text-right">去程車費（＄）</label>
           </div>
-          <div class="col-xs-12 col-sm-8">
-            <p><input id="duty_expense" class="form-control" type="number" step="0.1" v-model="duty_expense"></p>
+          <div class="col-xs-5 col-sm-7">
+            <p><input id="duty_expense" class="form-control" type="number" step="0.1" placeholder="請輸入金額" maxlength="6" v-model="duty_expense"></p>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <p class="bg-warning">１程交通收費： $ {{ duty_expense }}</p>
-            <p class="bg-success">來回交通收費： $ {{ duty_expense * 2 }}</p>
+          <div class="col-xs-12 col-sm-4 xpad">
+            <p class="">來回車費： $ {{ duty_expense * 2 }}<small>（單程： $ {{ duty_expense * 1 }}）</small></p>
           </div>
         </div>
       </div>
@@ -125,16 +129,14 @@
       <div class="duty-day-section">
         <div class="row">
           <div class="col-xs-12">
-            <p class="hint bg-info">一個月平均上班日數</p>
+            <p class="hint bg-info">3. 每月平均上班日數（0 - 30）：<strong>{{ duty_days }}日</strong></p>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label for="duty_days" class="text-right">日數（0 - 30日）</label>
-          </div>
-          <div class="col-xs-12 col-sm-6 slider-cont">
-            <p><vue-slider id="duty_days" v-model="duty_days" v-bind:max="s_max" v-bind:min="s_min" v-on:drag-end="chg_dutyday"></vue-slider></p>
+          <div class="col-xs-12 col-sm-6 col-sm-push-3 slider-cont">
+            <label for="duty_days" class="access text-right">日數</label>
+            <p><vue-slider id="duty_days" v-model="duty_days" v-bind:max="s_max" v-bind:min="s_min" v-bind:tooltip="s_tooltip" v-on:drag-end="chg_dutyday"></vue-slider></p>
           </div>
         </div>
       </div>
@@ -144,51 +146,42 @@
       <div class="holiday-day-section">
         <div class="row">
           <div class="col-xs-12">
-            <p class="hint bg-info">假日出行嗎？</p>
+            <p class="hint bg-info">4. 假日交通費</p>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <label for="holiday_expense" class="">平均一天假日交通費用（$）</label>
+          <div class="col-xs-7 col-sm-5">
+            <label for="holiday_expense" class="lbl-vc">每天交通費用（$）</label>
           </div>
-          <div class="col-xs-12 col-sm-8">
-            <p><input id="holiday_expense" class="form-control" type="number" step="0.1" v-model="holiday_expense" v-on:change="chg_holiday"></p>
+          <div class="col-xs-5 col-sm-7">
+            <p><input id="holiday_expense" class="form-control" type="number" step="0.1" placeholder="請輸入金額" maxlength="6" v-model="holiday_expense" v-on:change="chg_holiday"></p>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-xs-12 col-sm-4">
-            <p class="bg-warning">假期日數（30日 - 上班日子）： {{ holiday_days }} 日</p>
-            <p class="bg-success">假期交通費： $ {{ holiday_days * holiday_expense * 2 }}</p>
+          <div class="col-xs-12 col-sm-4 xpad">
+            <p class="">{{ holiday_days * 1 }}日假期總交通費： $ {{ holiday_days * holiday_expense }}</p>
           </div>
         </div>
       </div>
 
-      <div class="row">
+      <div class="row result">
         <div class="col-xs-12 text-center">
-          <h4>每月交通費：{{ formatPrice(total_fare) }}</h4>
           <h2>估計補貼：{{ formatPrice(back_pay) }}</h2>
+          <h4>每月交通費：{{ formatPrice(total_fare) }}</h4>
         </div>
       </div>
     </fieldset>
 
     <footer>
       <div class="container">
-        <hr>
         <div class="row">
           <div class="col-xs-12 text-center">
-            <p>
-            <a href="https://hk01.com/">
-              <img class="logo-hk01news" src="assets/img/hk01news-logo.png" alt="01新聞">
-            </a>
-            </p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-12 text-center">
+            <p><a href="https://carrielamgov.hk01.com/section/%E6%96%BD%E6%94%BF%E8%BF%BD%E8%B9%A4" title="追蹤特首施政承諾" class="ext-link" target="_blank">追蹤特首施政承諾</a></p>
+            <hr>
             <p>資料來源：<br>政府資料一線通、 港鐵公司網頁</p>
-            <p class="text-muted"><small>數據以簡單計算，僅供參考，實際情況請向有關當局查詢詳情。</small></p>
+            <p class="text-muted"><small>補貼金額僅供參考。車資以成人八達通計算，未包括港鐵八達通車費97折優惠；每月日數假設為30天。</small></p>
           </div>
         </div>
       </div>
@@ -199,50 +192,50 @@
 <script>
 import vueSlider from 'vue-slider-component';
 import axios from 'axios';
-require('./assets/sass/style.scss');
+require('../assets/sass/style.scss');
 const _ = require('lodash/core');
 
 let mtr_lines = [
  {
    "ld": 1,
-   "ln": "港島綫"
+   "ln": "港島線"
  },
  {
    "ld": 2,
-   "ln": "南港島綫"
+   "ln": "南港島線"
  },
  {
    "ld": 3,
-   "ln": "觀塘綫"
+   "ln": "觀塘線"
  },
  {
    "ld": 4,
-   "ln": "荃灣綫"
+   "ln": "荃灣線"
  },
  {
    "ld": 5,
-   "ln": "將軍澳綫"
+   "ln": "將軍澳線"
  },
  {
    "ld": 6,
-   "ln": "東涌綫及迪士尼綫"
+   "ln": "東涌線及迪士尼線"
  },
  {
    "ld": 7,
-   "ln": "東鐵綫"
+   "ln": "東鐵線"
  },
  {
    "ld": 8,
-   "ln": "馬鞍山綫"
+   "ln": "馬鞍山線"
  },
  {
    "ld": 9,
-   "ln": "西鐵綫"
+   "ln": "西鐵線"
  },
- {
-   "ld": 10,
-   "ln": "機場快綫"
- }
+ // {
+ //   "ld": 10,
+ //   "ln": "機場快線"
+ // }
 ];
 let mtr_stns = [
  {
@@ -816,11 +809,13 @@ export default {
     return {
       mtr_fares: "",
       travel_method: "mtr",
-      duty_expense: 20.0,
+      duty_expense: "",
       duty_days: 20,
-      holiday_expense: 30.0,
+      holiday_expense: "",
+      holiday_in_count: 1,
       s_max: 30,
       s_min: 0,
+      s_tooltip: 'hover',
       mtr_line_from: 3,
       mtr_stn_from: 8,
       mtr_line_to: 1,
@@ -847,13 +842,16 @@ export default {
     one_day_fee () {
       let vm = this;
       let the_exp = this.duty_expense;
+      
       if ("mtr" == this.travel_method) {
         return vm.mtr_fee
+      } else if ("" == the_exp) {
+        return 0
       }
       return the_exp
     },
     total_fare () {
-      return (this.one_day_fee * 2 *this.duty_days+this.holiday_expense*this.holiday_days)
+      return (this.one_day_fee * 2 *this.duty_days+ this.holiday_expense*this.holiday_days*this.holiday_in_count)
     },
     mtr_lines_from () {
       return mtr_lines
@@ -889,25 +887,25 @@ export default {
         return "$ " + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     },
     chg_method (e) {
-      this.$ga.event('method', 'method-change', 'type', this.travel_method)
+      this.$ga.event('method', 'type', this.travel_method, 'method-change')
     },
     chg_line_from (e) {
-      this.$ga.event('fare', 'mtr-change', 'mtr-line-from', this.mtr_line_from)
+      this.$ga.event('fare', 'mtr-line-from', this.mtr_line_from, 'mtr-change')
     },
     chg_stn_from (e) {
-      this.$ga.event('fare', 'mtr-change', 'mtr-stn-from', this.mtr_stn_from)
+      this.$ga.event('fare', 'mtr-stn-from', this.mtr_stn_from, 'mtr-change')
     },
     chg_line_to (e) {
-      this.$ga.event('fare', 'mtr-change', 'mtr-line-to', this.mtr_line_to)
+      this.$ga.event('fare', 'mtr-line-to', this.mtr_line_to, 'mtr-change')
     },
     chg_stn_to (e) {
-      this.$ga.event('fare', 'mtr-change', 'mtr-stn-to', this.mtr_stn_to)
+      this.$ga.event('fare', 'mtr-stn-to', this.mtr_stn_to, 'mtr-change')
     },
     chg_dutyday (e) {
-      this.$ga.event('duty', 'duty-change', 'duty-days', this.duty_days)
+      this.$ga.event('duty', 'duty-days', this.duty_days, 'duty-change')
     },
     chg_holiday (e) {
-      this.$ga.event('duty', 'duty-change', 'duty-days', this.holiday_expense)
+      this.$ga.event('duty', 'duty-days', this.holiday_expense, 'duty-change')
     }
   },
   created: function () {

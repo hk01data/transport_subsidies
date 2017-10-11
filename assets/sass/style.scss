@@ -1,3 +1,56 @@
 body {
-	font-family: "Microsoft YaHei", "Arial", sans-serif;
+  font-family: "Microsoft YaHei", "Arial", sans-serif;
+}
+.access {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  text-indent: -999px;
+}
+header {
+  .main-logo,
+  h2 {
+    margin: 0;
+  }
+}
+select {
+  width: 100%;
+}
+.main-logo {
+  position: absolute;
+}
+.hint {
+  margin: 0 0 4px;
+  padding: 8px 14px;
+}
+.slider-cont {
+  // margin-top: 30px;
+}
+.logo-hk01news {
+  width: 3em;
+  height: auto;
+}
+.mtr-section {
+  label {
+    margin: 0;
+  }
+}
+.result {
+  h2 {
+    margin: -2px 0 4px;
+    padding: 4px 0;
+    border-top: 1px solid #EFEFEF;
+  }
+}
+.lbl-vc {
+  padding: 6px 12px;
+}
+.xpad p {
+  padding: 0 12px;
+}
+.ext-link {
+  padding: 4px 10px;
+  border: 1px solid #d9edf7;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px #DDD;
 }
