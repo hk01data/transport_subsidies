@@ -168,8 +168,8 @@
 
       <div class="row result">
         <div class="col-xs-12 text-center">
-          <h2>估計補貼：{{ formatPrice(back_pay) }}</h2>
-          <h4>每月交通費：{{ formatPrice(total_fare) }}</h4>
+          <h4>每月交通總開支：{{ formatPrice(total_fare) }}</h4>
+          <h2>估計可獲補貼：{{ formatPrice(back_pay) }}</h2>
         </div>
       </div>
     </fieldset>
