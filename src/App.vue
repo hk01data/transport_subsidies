@@ -181,7 +181,7 @@
             <p><a href="https://carrielamgov.hk01.com/section/%E6%96%BD%E6%94%BF%E8%BF%BD%E8%B9%A4" title="追蹤特首施政承諾" class="ext-link" target="_blank">追蹤特首施政承諾</a></p>
             <hr>
             <p>資料來源：<br>政府資料一線通、 港鐵公司網頁</p>
-            <p class="text-muted"><small>補貼金額僅供參考。車資以成人八達通計算，未包括港鐵八達通車費97折優惠；每月日數假設為30天。</small></p>
+            <p class="text-muted"><small>補貼金額僅供參考。車資以成人單程八達通計算，未包括港鐵八達通車費97折優惠。機場快線車費不計算即日來回優惠。每月日數假設為30天。</small></p>
           </div>
         </div>
       </div>
@@ -885,25 +885,25 @@ export default {
         return "$ " + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     },
     chg_method (e) {
-      this.$ga.event('method', 'type', this.travel_method, 'method-change')
+      this.$ga.event('method', 'method-change', 'type-' + this.travel_method, this.travel_method)
     },
     chg_line_from (e) {
-      this.$ga.event('fare', 'mtr-line-from', this.mtr_line_from, 'mtr-change')
+      this.$ga.event('fare', 'fare-change', 'mtr-line-from-' + this.mtr_line_from, this.mtr_line_from)
     },
     chg_stn_from (e) {
-      this.$ga.event('fare', 'mtr-stn-from', this.mtr_stn_from, 'mtr-change')
+      this.$ga.event('fare', 'fare-change', 'mtr-stn-from-' + this.mtr_stn_from, this.mtr_stn_from)
     },
     chg_line_to (e) {
-      this.$ga.event('fare', 'mtr-line-to', this.mtr_line_to, 'mtr-change')
+      this.$ga.event('fare', 'fare-change', 'mtr-line-to-' + this.mtr_line_to, this.mtr_line_to)
     },
     chg_stn_to (e) {
-      this.$ga.event('fare', 'mtr-stn-to', this.mtr_stn_to, 'mtr-change')
+      this.$ga.event('fare', 'fare-change', 'mtr-stn-to-' + this.mtr_stn_to, this.mtr_stn_to)
     },
     chg_dutyday (e) {
-      this.$ga.event('duty', 'duty-days', this.duty_days, 'duty-change')
+      this.$ga.event('duty', 'duty-change', 'duty-days-' + this.duty_days, this.duty_days)
     },
     chg_holiday (e) {
-      this.$ga.event('duty', 'duty-days', this.holiday_expense, 'duty-change')
+      this.$ga.event('holiday', 'holiday-change', 'holiday-days-' + this.holiday_expense, this.holiday_expense)
     }
   },
   created: function () {
