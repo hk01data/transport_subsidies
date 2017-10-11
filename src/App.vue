@@ -773,21 +773,21 @@ let mtr_stns = [
    "sn": "屯門",
    "ld": 9
  },
- // {
- //   "sd": 44,
- //   "sn": "香港",
- //   "ld": 10
- // },
- // {
- //   "sd": 45,
- //   "sn": "九龍",
- //   "ld": 10
- // },
- // {
- //   "sd": 46,
- //   "sn": "青衣",
- //   "ld": 10
- // },
+ {
+   "sd": 44,
+   "sn": "香港",
+   "ld": 10
+ },
+ {
+   "sd": 45,
+   "sn": "九龍",
+   "ld": 10
+ },
+ {
+   "sd": 46,
+   "sn": "青衣",
+   "ld": 10
+ },
  {
    "sd": 47,
    "sn": "機場",
@@ -888,16 +888,16 @@ export default {
       this.$ga.event('method', 'method-change', 'type-' + this.travel_method, this.travel_method)
     },
     chg_line_from (e) {
-      this.$ga.event('fare', 'method-change', 'mtr-line-from-' + this.mtr_line_from, this.mtr_line_from)
+      this.$ga.event('fare', 'fare-change', 'mtr-line-from-' + this.mtr_line_from, this.mtr_line_from)
     },
     chg_stn_from (e) {
-      this.$ga.event('fare', 'method-change', 'mtr-stn-from-' + this.mtr_stn_from, this.mtr_stn_from)
+      this.$ga.event('fare', 'fare-change', 'mtr-stn-from-' + this.mtr_stn_from, this.mtr_stn_from)
     },
     chg_line_to (e) {
-      this.$ga.event('fare', 'method-change', 'mtr-line-to-' + this.mtr_line_to, this.mtr_line_to)
+      this.$ga.event('fare', 'fare-change', 'mtr-line-to-' + this.mtr_line_to, this.mtr_line_to)
     },
     chg_stn_to (e) {
-      this.$ga.event('fare', 'method-change', 'mtr-stn-to-' + this.mtr_stn_to, this.mtr_stn_to)
+      this.$ga.event('fare', 'fare-change', 'mtr-stn-to-' + this.mtr_stn_to, this.mtr_stn_to)
     },
     chg_dutyday (e) {
       this.$ga.event('duty', 'duty-change', 'duty-days-' + this.duty_days, this.duty_days)
