@@ -113,7 +113,7 @@
             <label for="duty_expense" class="lbl-vc text-right">去程車費（＄）</label>
           </div>
           <div class="col-xs-5 col-sm-7">
-            <p><input id="duty_expense" class="form-control" type="number" step="0.1" placeholder="請輸入金額" maxlength="6" v-model="duty_expense"></p>
+            <p><input id="duty_expense" class="form-control" type="number" step="0.1" placeholder="請輸入金額" min="0" max="600000" v-model="duty_expense"></p>
           </div>
         </div>
 
@@ -155,7 +155,7 @@
             <label for="holiday_expense" class="lbl-vc">每天交通費用（$）</label>
           </div>
           <div class="col-xs-5 col-sm-7">
-            <p><input id="holiday_expense" class="form-control" type="number" step="0.1" placeholder="請輸入金額" maxlength="6" v-model="holiday_expense" v-on:change="chg_holiday"></p>
+            <p><input id="holiday_expense" class="form-control" type="number" step="0.1" placeholder="請輸入金額" min="0" max="600000" v-model="holiday_expense" v-on:change="chg_holiday"></p>
           </div>
         </div>
 
@@ -866,16 +866,14 @@ export default {
       return _.filter(mtr_stns, { 'ld': this.mtr_line_to })
     },
     back_pay () {
-      let pay = 0;
-      let exp_range =   [9999999, 800, 600, 400, 0]
-      let pay_range = [200, 150, 100, 0]
-      let i;
-
-      for (i = 0; i<pay_range.length; i++) {
-        if (this.total_fare > exp_range[i+1] && this.total_fare <= exp_range[i]) {
-          pay = pay_range[i]
-          break
-        }
+      let pay = 0, min_exp = 400, cap = 300, rate = 0.25;
+      if (min_exp < this.total_fare) {
+        pay = (this.total_fare - min_exp) * rate;
+      } else {
+        pay = 0;
+      }
+      if (cap < pay) {
+        pay = cap
       }
 
       return pay;
