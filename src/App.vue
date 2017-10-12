@@ -912,7 +912,11 @@ export default {
     axios.get('assets/fares_mtr.json')
     .then(function (response) {
       vm.mtr_fares = response.data;
-      vm.$ga.page('/')
+      vm.$ga.page({
+        page: '/',
+        title: '交通補貼你有計！ | 香港01 | json',
+        location: window.location.href
+      })
     })
     .catch(function (error) {
       console.log(error);
