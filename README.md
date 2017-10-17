@@ -1,3 +1,3 @@
-# traffic fare subsidise scheme
+# How much do you benefit from the Public Transport Fare Subsidy Scheme?
 
-Carrie Lam will announce her first policy address on 11th October, 2017. One of her new policies take care of citizens travelling spending.
+Chief Executive Carrie Lam has announced the introduction of a public transport subsidy scheme in her maiden policy address on 11th October, 2017.
