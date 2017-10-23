@@ -25,19 +25,29 @@
         <div class="col-xs-12 col-sm-8">
           <div class="a__option col-xs-6">
             <input type="radio" id="mtr" value="mtr" v-model="travel_method" v-on:change="chg_method">
-            <label for="mtr">港鐵</label>
+            <label :class="{'active': 'mtr' === travel_method}" for="mtr">港鐵</label>
           </div>
 
           <div class="a__option col-xs-6">
             <input type="radio" id="bus" value="bus" v-model="travel_method" v-on:change="chg_method">
-            <label for="bus">其他</label>
+            <label :class="{'active': 'bus' === travel_method}" for="bus">巴士/專線小巴</label>
+          </div>
+
+          <div class="a__option col-xs-6">
+            <input type="radio" id="monthly" value="monthly" v-model="travel_method" v-on:change="chg_method">
+            <label :class="{'active': 'monthly' === travel_method}" for="monthly">月票</label>
+          </div>
+
+          <div class="a__option col-xs-6">
+            <input type="radio" id="other" value="other" v-model="travel_method" v-on:change="chg_method">
+            <label :class="{'active': 'other' === travel_method}" for="other">自行輸入金額</label>
           </div>
         </div>
       </div>
 
       <div class="row">
         <div class="col-xs-12">
-          <p class="hint bg-info">2. 去程交通花費是...</p>
+          <p class="hint bg-info">{{ headline2 }}</p>
         </div>
       </div>
 
@@ -107,7 +117,67 @@
       </div>
 
 
-      <div class="non-mtr-section" v-if="'mtr' != travel_method">
+      <div class="bus-section" v-if="'bus' == travel_method">
+        <div class="row">
+          <div class="col-xs-12">
+            <autocomplete-input :options="bus_fares" @select="onOptionSelect" @chosen-select="pick1" @keyword-input="clear_bus_pay">
+              <template slot="item" scope="option">
+                <article class="media">
+                  <figure class="media-left" :class="{
+                    'red': '九巴' === option.optr.toLowerCase(),
+                    'orange': '新巴' === option.optr.toLowerCase(),
+                    'purple': '城巴' === option.optr.toLowerCase(),
+                    'green': 'minibus' === option.type.toLowerCase()
+                  }">
+                    <p class="image is-64x64">
+                      <span class="br-route">{{ option.title }}</span><br>
+                      <small class="text-muted">{{ option.optr }}</small>
+                    </p>
+                  </figure>
+                  <p class="row text-muted">
+                  <span class="">{{ option.description }}</span>
+                  </p>
+                  <!--
+                  <img :src="option.thumbnail">
+                  {{ formatPrice(option.fullfares).replace("$ ", "$") }}
+                  <br> {{ option.thumbnail }} - {{ option.optr }}
+                  -->
+                </article>
+              </template>
+            </autocomplete-input>
+            <ul>
+              <li v-for="(frs, index) in bus_fare_options" >
+                <a class="br-fare" :class="{'active' : frs.active}" href="javascript:void(0);"
+                    @click="pick2({'fare': frs.fare, 'index': index})">
+                  <span class="br-fare-fee">${{ frs.fare }}</span> {{ frs.dest }}
+                </a>
+              </li>
+            </ul>
+
+            <p class="">來回票價*： <strong>$ {{ bus_fee * 2 }}</strong> <small>（單程 $ {{ bus_fee }}）</small></p>
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="monthly-section" v-if="'monthly' == travel_method">
+        <div class="row">
+          <div class="col-xs-7 col-sm-5">
+            <label for="duty_expense" class="lbl-vc text-right">月費（＄）</label>
+          </div>
+          <div class="col-xs-5 col-sm-7">
+            <p><input id="duty_expense_30" class="form-control" type="number" step="0.1" placeholder="請輸入金額" min="0" max="600000" v-model="duty_expense_30"></p>
+          </div>
+        </div>
+
+        <div class="row">
+
+        </div>
+      </div>
+
+
+      <div class="non-mtr-section" v-if="'other' == travel_method">
         <div class="row">
           <div class="col-xs-7 col-sm-5">
             <label for="duty_expense" class="lbl-vc text-right">去程車費（＄）</label>
@@ -178,9 +248,9 @@
       <div class="container">
         <div class="row">
           <div class="col-xs-12 text-center">
-            <p><a href="https://carrielamgov.hk01.com/section/%E6%96%BD%E6%94%BF%E8%BF%BD%E8%B9%A4" title="追蹤特首施政承諾" class="ext-link" target="_blank">追蹤特首施政承諾</a></p>
+            <p><a href="https://carrielamgov.hk01.com/section/%E6%96%BD%E6%94%BF%E8%BF%BD%E8%B9%A4" title="追蹤特首其他施政承諾" class="ext-link" target="_blank">追蹤特首其他施政承諾</a></p>
             <hr>
-            <p>資料來源：<br>政府資料一線通、 港鐵公司網頁</p>
+            <p>資料來源：<br>政府資料一線通、 港鐵公司、相關專營巴士公司網頁</p>
             <p class="text-muted"><small>補貼金額僅供參考。車資以成人單程八達通計算，未包括港鐵八達通車費97折優惠。機場快線車費不計算即日來回優惠。每月日數假設為30天。</small></p>
           </div>
         </div>
@@ -807,10 +877,13 @@ export default {
   },
   data () {
     return {
-      mtr_fares: "",
-      travel_method: "mtr",
+      sheadline2: "2. 去程交通花費是...",
+      mtr_fares: [],
+      bus_fares: [],
+      travel_method: "bus",
       duty_expense: "",
-      duty_days: 20,
+      duty_expense_30: "",
+      duty_days: 21,
       holiday_expense: "",
       holiday_in_count: 1,
       s_max: 30,
@@ -819,10 +892,21 @@ export default {
       mtr_line_from: 3,
       mtr_stn_from: 8,
       mtr_line_to: 1,
-      mtr_stn_to: 2
+      mtr_stn_to: 2,
+      bus_fare_options: [],
+      bus_pay: 0
     }
   },
   computed: {
+    headline2 () {
+      switch (this.travel_method) {
+        case "bus": return "2. 輸入路線查詢票價"
+        break
+        case "monthly": return "2. 輸入月票票價"
+        break
+        default: return this.sheadline2
+      }
+    },
     holiday_days () {
       if (this.duty_days < 31) {
         return (30 - this.duty_days)
@@ -839,19 +923,31 @@ export default {
         return 0
       }
     },
+    bus_fee () {
+      let vm = this;
+
+      return this.bus_pay
+    },
     one_day_fee () {
       let vm = this;
       let the_exp = this.duty_expense;
       
       if ("mtr" == this.travel_method) {
         return vm.mtr_fee
+      } else if ("bus" == this.travel_method) {
+        return vm.bus_fee
       } else if ("" == the_exp) {
         return 0
       }
       return the_exp
     },
     total_fare () {
-      return (this.one_day_fee * 2 *this.duty_days+ this.holiday_expense*this.holiday_days*this.holiday_in_count)
+      let vm = this;
+      let commu = this.one_day_fee * 2 *this.duty_days
+      if ("monthly" == this.travel_method) {
+        commu = parseFloat(vm.duty_expense_30)
+      }
+      return (commu + this.holiday_expense*this.holiday_days*this.holiday_in_count)
     },
     mtr_lines_from () {
       return mtr_lines
@@ -904,6 +1000,28 @@ export default {
     },
     chg_holiday (e) {
       this.$ga.event('holiday', 'holiday-change', 'holiday-days-' + this.holiday_expense, this.holiday_expense)
+    },
+    onOptionSelect (option) {
+      // console.log('Selected option:', option)
+    },
+    clear_bus_pay (value) {
+      this.bus_pay = 0
+    },
+    pick1 (fare) {
+      // console.log('Selected faressss:', fare)
+      this.bus_fare_options = fare
+      if (1 == fare.length) {
+        this.bus_pay = fare[0].fare
+        this.bus_fare_options[0].active = true
+      }
+    },
+    pick2 (in_obj) {
+      // console.log('Selected fare:', fare)
+      this.bus_pay = in_obj.fare
+      this.bus_fare_options.map(o => {
+        o.active = false
+      })
+      this.bus_fare_options[in_obj.index].active = true
     }
   },
   created: function () {
@@ -912,10 +1030,22 @@ export default {
     axios.get('assets/fares_mtr.json')
     .then(function (response) {
       vm.mtr_fares = response.data;
-      vm.$ga.page({
-        page: '/',
-        title: '交通補貼你有計！ | 香港01 | json',
-        location: window.location.href
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    axios.get('assets/all_bus.json')
+    .then(function (response) {
+      vm.bus_fares = response.data.map((o) => {
+        let bus_map = {
+          "kmb" : "九巴",
+          "nwfb" : "新巴",
+          "ctb" : "城巴"
+        };
+        o.optr = (o.optr.toLowerCase() in bus_map) ? bus_map[o.optr.toLowerCase()] :"綠色小巴"
+
+        return o
       })
     })
     .catch(function (error) {
