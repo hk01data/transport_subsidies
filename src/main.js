@@ -70,8 +70,12 @@ Vue.component('autocomplete-input', {
       const selectedOption = this.fOptions[this.highlightedPosition]
       this.$emit('select', selectedOption)
       this.isOpen = false
-      this.keyword = selectedOption.route
-      this.$emit('chosen-select', selectedOption.fares)
+      if (selectedOption) {
+        this.keyword = selectedOption.route | ""
+        this.$emit('chosen-select', {f: selectedOption.fares, r:this.keyword, o:selectedOption.optr})
+      } else {
+        this.keyword = ""
+      }
     },
     toTop (target) {
       let target_top = document.querySelectorAll('.bus-section')[0].offsetTop - 40;

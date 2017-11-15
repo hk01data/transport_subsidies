@@ -162,7 +162,7 @@
                   <ul>
                     <li v-for="(frs, index) in value.bus_fare_options" >
                       <a class="br-fare" :class="{'active' : frs.active}" href="javascript:void(0);"
-                          @click="pick2(value, {'fare': frs.fare, 'index': index})">
+                          @click="pick2(value, {'fare': frs.fare, 'index': index, 'keyword': value.keyword, 'optr': frs.o})">
                         <span class="br-fare-fee">${{ frs.fare }}</span> {{ frs.dest }}
                       </a>
                     </li>
@@ -914,8 +914,8 @@ export default {
       mtr_stn_from: 8,
       mtr_line_to: 1,
       mtr_stn_to: 2,
-      bus_fare_options: [],
       bus_pay: 0,
+      bus_route: "",
       two_way: true,
       rows: [
         {
@@ -1077,10 +1077,12 @@ export default {
     },
     pick1 (self, fare) {
       // console.log('Selected faressss:', self, fare)
-      self.bus_fare_options = fare
-      if (1 == fare.length) {
-        self.bus_pay = fare[0].fare
+      self.bus_fare_options = fare.f
+      self.bus_route = fare.r
+      if (1 == fare.f.length) {
+        self.bus_pay = fare.f[0].fare
         self.bus_fare_options[0].active = true
+        this.$ga.event('fare', 'bus-change1', 'route-' + fare.o + '-' + self.bus_route + '-' + self.bus_pay, 1)
       }
     },
     pick2 (self, in_obj) {
@@ -1090,6 +1092,7 @@ export default {
         o.active = false
       })
       self.bus_fare_options[in_obj.index].active = true
+      this.$ga.event('fare', 'bus-change2', 'route-' + '九巴' + self.bus_route + '-' + self.bus_fare_options[in_obj.index].fare, 1)
     }
   },
   created: function () {
