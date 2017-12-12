@@ -54,7 +54,7 @@
 
                 <div class="a__option col-xs-6">
                   <input type="radio" :id="'other' + key" value="other" v-model="value.travel_method" v-on:change="chg_method">
-                  <label :class="{'active': 'other' === value.travel_method}" :for="'other' + key">自行輸入金額</label>
+                  <label :class="{'active': 'other' === value.travel_method}" :for="'other' + key">其他，包括紅色小巴、邨巴、街渡等</label>
                 </div>
               </div>
             </div>
