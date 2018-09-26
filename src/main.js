@@ -3,7 +3,7 @@ import App from './App.vue'
 import VueAnalytics from 'vue-analytics'
 
 Vue.use(VueAnalytics, {
-  id: 'UA-107900580-1',
+  id: 'UA-XXXX',
   checkDuplicatedScript: true
 })
 

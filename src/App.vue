@@ -9,7 +9,7 @@
           </a>
         </p>
         <h2 class="text-center">補貼你有計</h2>
-        <p class="text-muted text-center"><small>交通補貼措施2017</small></p>
+        <p class="text-muted text-center"><small>交通補貼措施（2018年更新）</small></p>
       </div>
     </header>
 
@@ -269,7 +269,9 @@
       <div class="container">
         <div class="row">
           <div class="col-xs-12 text-center">
+            <!--
             <p><a href="https://carrielamgov.hk01.com/section/%E6%96%BD%E6%94%BF%E8%BF%BD%E8%B9%A4" title="追蹤特首其他施政承諾" class="ext-link" target="_blank">追蹤特首其他施政承諾</a></p>
+            -->
             <hr>
             <p>資料來源：<br>政府資料一線通、 港鐵公司、相關專營巴士公司網頁</p>
             <p class="text-muted"><small>補貼金額僅供參考。車資以成人單程八達通計算，未包括港鐵八達通車費97折優惠。機場快線車費不計算即日來回優惠。每月日數假設為30天。</small></p>
@@ -898,14 +900,15 @@ export default {
   },
   data () {
     return {
-      sheadline2: "去程交通花費是...",
+      event_cate: 'transubcal',
+      sheadline2: '去程交通花費是...',
       mtr_fares: [],
       bus_fares: [],
-      travel_method: "bus",
-      duty_expense: "",
-      duty_expense_30: "",
+      travel_method: 'bus',
+      duty_expense: '',
+      duty_expense_30: '',
       duty_days: 21,
-      holiday_expense: "",
+      holiday_expense: '',
       holiday_in_count: 1,
       s_max: 30,
       s_min: 0,
@@ -915,13 +918,13 @@ export default {
       mtr_line_to: 1,
       mtr_stn_to: 2,
       bus_pay: 0,
-      bus_route: "",
+      bus_route: '',
       two_way: true,
       rows: [
         {
-          travel_method: "bus",
-          duty_expense: "",
-          duty_expense_30: "",
+          travel_method: 'bus',
+          duty_expense: '',
+          duty_expense_30: '',
           mtr_line_from: 3,
           mtr_stn_from: 8,
           mtr_line_to: 1,
@@ -937,7 +940,7 @@ export default {
       if (this.duty_days < 31) {
         return (30 - this.duty_days)
       } else {
-        return "輸入有問題！"
+        return '輸入有問題！'
       }
     },
     one_day_fee () {
@@ -945,15 +948,15 @@ export default {
       let the_exp = 0;
 
       vm.rows.map(function (o) {
-        if ("mtr" == o.travel_method) {
+        if ('mtr' == o.travel_method) {
           the_exp += parseFloat(vm.mtr_fee(o))
-        } else if ("bus" == o.travel_method) {
+        } else if ('bus' == o.travel_method) {
           the_exp += parseFloat(vm.bus_fee(o))
-        } else if ("monthly" == o.travel_method) {
+        } else if ('monthly' == o.travel_method) {
           the_exp += 0
-        } else if ("other" == o.travel_method) {
-          the_exp += ("" === o.duty_expense) ? 0 : parseFloat(o.duty_expense)
-        } else if ("" == the_exp) {
+        } else if ('other' == o.travel_method) {
+          the_exp += ('' === o.duty_expense) ? 0 : parseFloat(o.duty_expense)
+        } else if ('' == the_exp) {
           the_exp += 0
         }
       });
@@ -964,8 +967,8 @@ export default {
       let vm = this;
       let commu = this.one_day_fee * ((vm.two_way) ? 2 : 1) *this.duty_days
       vm.rows.map(function (o) {
-        if ("monthly" == o.travel_method) {
-          commu += ("" === o.duty_expense_30) ? 0 : parseFloat(o.duty_expense_30)
+        if ('monthly' == o.travel_method) {
+          commu += ('' === o.duty_expense_30) ? 0 : parseFloat(o.duty_expense_30)
         }
       });
       return (commu + this.holiday_expense*this.holiday_days*this.holiday_in_count)
@@ -987,14 +990,14 @@ export default {
   methods: {
     formatPrice(value) {
         let val = (value/1).toFixed(1)
-        return "$ " + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        return '$ ' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
     addRow: function (index) {
       try {
         this.rows.splice(index + 1, 0, {
-          travel_method: "mtr",
-          duty_expense: "",
-          duty_expense_30: "",
+          travel_method: 'mtr',
+          duty_expense: '',
+          duty_expense_30: '',
           mtr_line_from: 3,
           mtr_stn_from: 8,
           mtr_line_to: 1,
@@ -1014,9 +1017,9 @@ export default {
     },
     headline2 (self) {
       switch (self.travel_method) {
-        case "bus": return "輸入路線查詢票價"
+        case 'bus': return '輸入路線查詢票價'
         break
-        case "monthly": return "輸入月票票價"
+        case 'monthly': return '輸入月票票價'
         break
         default: return this.sheadline2
       }
@@ -1110,11 +1113,11 @@ export default {
     .then(function (response) {
       vm.bus_fares = response.data.map((o) => {
         let bus_map = {
-          "kmb" : "九巴",
-          "nwfb" : "新巴",
-          "ctb" : "城巴"
+          'kmb' : '九巴',
+          'nwfb' : '新巴',
+          'ctb' : '城巴'
         };
-        o.optr = (o.optr.toLowerCase() in bus_map) ? bus_map[o.optr.toLowerCase()] :"綠色小巴"
+        o.optr = (o.optr.toLowerCase() in bus_map) ? bus_map[o.optr.toLowerCase()] :'綠色小巴'
 
         return o
       })
