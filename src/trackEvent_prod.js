@@ -22,10 +22,10 @@ function getAnonymousId() {
 // Initialize the tracker client
 var myTracker = new trackerClient({
     GA: {
-        trackingId: ["UA-70981149-9", "UA-70981149-36", "UA-112679299-6"] // UA-112679299-6 is the profile for hk01data editorial team
+        trackingId: ["UA-70981149-1", "UA-70981149-36", "UA-125354638-2"] // UA-125354638-2 is the profile for hk01data editorial team
     },
     Piwik: {
-        trackingUrl: "https://track.hktester.com/v1web/piwik.php",  // replace with your piwik tracking url
+        trackingUrl: "https://track.hk01.com/v1web/piwik.php",  // replace with your piwik tracking url
         siteId: 5,  // replace with your piwik site ID
         userId: getAnonymousId(), // replace with user ID, should be same as MEMBER_ID/ANONYMOUS_ID
         isSPA: true // if the page is single page application
@@ -33,11 +33,11 @@ var myTracker = new trackerClient({
 }, false);
 
 /* Config the selected article detail */
-const page_path = "/社會新聞/232437/";
-const author = "\u7c21\u6d69\u5fb7, \u6797\u70b3\u5764, \u6881\u9038\u98a8, \u856d\u8f1d\u6d69, \u5340\u79ae\u57ce";  // 簡浩德 林炳坤 梁逸風 蕭輝浩 區禮城
+const page_path = "/\u793e\u6703\u65b0\u805e/010101/";
+const author = "\u7c21\u6d69\u5fb7, \u6881\u9038\u98a8, \u856d\u8f1d\u6d69";  // 簡浩德 梁逸風 蕭輝浩
 const channel = "\u793e\u6703\u65b0\u805e"; // 社會新聞
 const section = "\u793e\u6703\u65b0\u805e"; // 社會新聞
-const article_id = "232437";
+const article_id = "010101";
 
 function fireArticlePV(url) {
     try {
@@ -63,9 +63,9 @@ function fireArticlePV(url) {
 function fireMapPV(url) {
     try {
         myTracker.disableGA({
-            'UA-70981149-9': true, // staging
-            'UA-125354638-1': true, // hk01 data
-            'UA-70981149-36': false // data team
+            'UA-70981149-1': true, // staging
+            'UA-70981149-36': false, // data team
+            'UA-125354638-2': true // hk01 data
         });
 
         // Send Pageview for Map

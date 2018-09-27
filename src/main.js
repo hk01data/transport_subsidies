@@ -118,7 +118,7 @@ Vue.component('autocomplete-input', {
       this.$emit('select', selectedOption)
       this.isOpen = false
       if (selectedOption) {
-        this.keyword = selectedOption.route | ""
+        this.keyword = selectedOption.route || ""
         this.$emit('chosen-select', {f: selectedOption.fares, r:this.keyword, o:selectedOption.optr})
       } else {
         this.keyword = ""

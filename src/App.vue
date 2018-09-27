@@ -162,7 +162,7 @@
                   <ul>
                     <li v-for="(frs, index) in value.bus_fare_options">
                       <a class="br-fare" :class="{'active' : value.bus_fare_options[index].active === 1}" href="javascript:void(0);" :key="frs.dest"
-                          @click="pick2(value, {'fare': frs.fare, 'index': index, 'keyword': value.keyword, 'optr': frs.o, 'frs': frs})">
+                          @click="pick2(value, {'fare': frs.fare, 'index': index, 'dest': frs.dest, 'frs': frs})">
                         <span class="br-fare-fee">${{ frs.fare }}</span> {{ frs.dest }}
                       </a>
                     </li>
@@ -285,7 +285,7 @@
 <script>
 import vueSlider from 'vue-slider-component';
 import axios from 'axios';
-import * as TrackEvent from './trackEvent.js'
+import * as TrackEvent from './trackEvent_tester.js'
 require('../assets/sass/style.scss');
 const _ = require('lodash/core');
 
@@ -895,7 +895,7 @@ let mtr_stns = [
 ];
 
 function generateItemID(inIndex) {
-  let index = inIndex | 0
+  let index = inIndex || 0
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
@@ -934,7 +934,7 @@ export default {
       two_way: true,
       rows: [
         {
-          travel_method: 'bus',
+          travel_method: 'mtr',
           duty_expense: '',
           duty_expense_30: '',
           mtr_line_from: 3,
@@ -1008,6 +1008,7 @@ export default {
         return '$ ' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
     addRow: function (index) {
+      let itemID = generateItemID(index + 1)
       try {
         this.rows.splice(index + 1, 0, {
           travel_method: 'mtr',
@@ -1019,11 +1020,12 @@ export default {
           mtr_stn_to: 2,
           bus_fare_options: [],
           bus_pay: 0,
-          itemID: generateItemID(index + 1)
+          itemID: itemID
         })
         this.fireEvent(this.event_cate + '_' + 'trip', 'click', {
           action: 'add',
-          button: index + 1
+          button: index + 1,
+          trip_id: itemID
         })
       } catch(e)
       {
@@ -1032,10 +1034,12 @@ export default {
     },
     removeRow: function (index) {
       if (this.rows.length > 1) {
+        let itemID = this.rows[index].itemID
         this.rows.splice(index, 1)
         this.fireEvent(this.event_cate + '_' + 'trip', 'click', {
           action: 'remove',
-          button: index
+          button: index,
+          trip_id: itemID
         })
       }
     },
@@ -1086,8 +1090,10 @@ export default {
       this.fireEvent(this.event_cate + '_' + 'mtr_line', 'select', {from: from, to: to, trip_id: self.itemID})
     },
     chg_stn_from (e, self) {
-      let from = _.filter(mtr_stns, { 'sd': self.mtr_stn_from })[0].sn
-      let to = _.filter(mtr_stns, { 'sd': self.mtr_stn_to })[0].sn
+      let from = _.filter(mtr_stns, { 'sd': self.mtr_stn_from })
+      from = from.length ? from[0].sn : 'undefined'
+      let to = _.filter(mtr_stns, { 'sd': self.mtr_stn_to })
+      to = to.length ? to[0].sn : 'undefined'
       this.fireEvent(this.event_cate + '_' + 'mtr_stn', 'select', {
         from: from,
         to: to,
@@ -1101,8 +1107,10 @@ export default {
       this.fireEvent(this.event_cate + '_' + 'mtr_line', 'select', {from: from, to: to, trip_id: self.itemID})
     },
     chg_stn_to (e, self) {
-      let from = _.filter(mtr_stns, { 'sd': self.mtr_stn_from })[0].sn
-      let to = _.filter(mtr_stns, { 'sd': self.mtr_stn_to })[0].sn
+      let from = _.filter(mtr_stns, { 'sd': self.mtr_stn_from })
+      from = from.length ? from[0].sn : 'undefined'
+      let to = _.filter(mtr_stns, { 'sd': self.mtr_stn_to })
+      to = to.length ? to[0].sn : 'undefined'
       this.fireEvent(this.event_cate + '_' + 'mtr_stn', 'select', {
         from: from,
         to: to,
@@ -1120,6 +1128,7 @@ export default {
       this.fireEvent(this.event_cate + '_' + 'dutyday', 'change', {dutyday: this.duty_days, holiday: 30 - this.duty_days})
     },
     chg_holiday (e) {
+      let vm = this
       let holiday_expense = (vm.holiday_expense === '') ? 0 : parseFloat(vm.holiday_expense)
       this.fireEvent(this.event_cate + '_' + 'holiday_expense', 'change', {
         holiday_daily_expense: holiday_expense,
@@ -1132,19 +1141,19 @@ export default {
       this.bus_pay = 0
     },
     pick1 (self, fare) {
-      console.log('Selected faressss:', self, fare, fare.f[0].dest)
+      // console.log('Selected faressss:', self, fare, fare.f[0].dest)
       self.bus_fare_options = fare.f
       self.bus_route = fare.r
+      self.bus_optr = fare.o
+      let bus_map = {
+        '九巴': 'kmb',
+        '新巴': 'nwfb',
+        '城巴': 'ctb',
+        '綠色小巴': 'green'
+      };
       if (1 === fare.f.length) {
         self.bus_pay = fare.f[0].fare
         self.bus_fare_options[0].active = true
-        // this.fireEvent(this.event_cate + '_' + 'bus_search', 'bus-change1', 'route-' + fare.o + '-' + self.bus_route + '-' + self.bus_pay)
-        let bus_map = {
-          '九巴': 'kmb',
-          '新巴': 'nwfb',
-          '城巴': 'ctb',
-          '綠色小巴': 'green'
-        };
         this.fireEvent(this.event_cate + '_' + 'bus_search', 'search', {
           type: bus_map[fare.o],
           line: self.bus_route,
@@ -1152,26 +1161,54 @@ export default {
           trip_id: self.itemID,
           oneway_fare: parseFloat(self.bus_pay)
         })
+      } else {
+        self.bus_pay = 0
+        this.fireEvent(this.event_cate + '_' + 'bus_search', 'search', {
+          type: bus_map[fare.o],
+          line: self.bus_route,
+          route: fare.f[0].dest,
+          trip_id: self.itemID,
+          oneway_fare: 'undefined'
+        })
       }
     },
     pick2 (self, in_obj) {
-      console.log('Selected fare:', self, in_obj)
-      self.bus_pay = in_obj.fare
-      let new_bus_fare_options = self.bus_fare_options
-      console.log(self.bus_fare_options)
+      // console.log('Selected fare:', self, in_obj)
+      let newRows = this.rows.slice()
+      let fIndex = -1
+      for (let i = 0; i < this.rows.length; i++) {
+        if (this.rows[i].itemID === self.itemID) {
+          fIndex = i
+        }
+      }
 
+      let newThisRow = newRows[fIndex]
+      let new_bus_fare_options = self.bus_fare_options
       new_bus_fare_options.map(o => {
         o.active = 0
       })
       new_bus_fare_options[in_obj.index].active = 1
-      console.log(new_bus_fare_options)
+      newThisRow.bus_fare_options = new_bus_fare_options
 
-      self.bus_fare_options = new_bus_fare_options
-      // this.fireEvent(this.event_cate + '_' + 'bus_search', 'bus-change2', 'route-' + '九巴' + self.bus_route + '-' + self.bus_fare_options[in_obj.index].fare)
-      // this.fireEvent(this.event_cate + '_' + 'bus_search', 'select', {
-      //   type: in_obj.fare.o,
-      //   line: self.bus_route
-      // })
+      newRows[fIndex] = newThisRow
+      this.rows = newRows
+
+      self.bus_pay = parseFloat(in_obj.fare)
+
+      let bus_map = {
+        '九巴': 'kmb',
+        '新巴': 'nwfb',
+        '城巴': 'ctb',
+        '綠色小巴': 'green'
+      };
+
+      this.fireEvent(this.event_cate + '_' + 'bus_search', 'select', {
+        type: bus_map[self.bus_optr],
+        line: self.bus_route,
+        section: in_obj.dest,
+        oneway_fare: parseFloat(in_obj.fare),
+        trip_id: self.itemID
+      })
     },
     detectSource (callback) {
       let linkText = window.location.href
@@ -1293,7 +1330,9 @@ export default {
       }
       TrackEvent.fireEvent(vm.event_cate + '_landing', 'view', {
         article_id: article_id,
-        source: source
+        source: source,
+        anonymous_id: TrackEvent.getAnonymousId(),
+        ts: Date.now()
       })
     })
   }
