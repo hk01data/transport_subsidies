@@ -23,7 +23,7 @@
           <span v-if="!two_way">來回程不同</span>
           <span>：</span>
           </label>
-          <input id="two-way" type="checkbox" v-model="two_way">
+          <input id="two-way" type="checkbox" v-model="two_way" v-on:change="chg_return">
         </div>
       </div>
 
@@ -38,22 +38,22 @@
               </div>
               <div class="col-xs-12 col-sm-8">
                 <div class="a__option col-xs-6">
-                  <input type="radio" :id="'mtr' + key" value="mtr" v-model="value.travel_method" v-on:change="chg_method">
+                  <input type="radio" :id="'mtr' + key" value="mtr" v-model="value.travel_method" v-on:change="chg_method($event, value)">
                   <label :class="{'active': 'mtr' === value.travel_method}" :for="'mtr' + key">港鐵</label>
                 </div>
 
                 <div class="a__option col-xs-6">
-                  <input type="radio" :id="'bus' + key" value="bus" v-model="value.travel_method" v-on:change="chg_method">
+                  <input type="radio" :id="'bus' + key" value="bus" v-model="value.travel_method" v-on:change="chg_method($event, value)">
                   <label :class="{'active': 'bus' === value.travel_method}" :for="'bus' + key">巴士/專線小巴</label>
                 </div>
 
                 <div class="a__option col-xs-6">
-                  <input type="radio" :id="'monthly' + key" value="monthly" v-model="value.travel_method" v-on:change="chg_method">
+                  <input type="radio" :id="'monthly' + key" value="monthly" v-model="value.travel_method" v-on:change="chg_method($event, value)">
                   <label :class="{'active': 'monthly' === value.travel_method}" :for="'monthly' + key">月票</label>
                 </div>
 
                 <div class="a__option col-xs-6">
-                  <input type="radio" :id="'other' + key" value="other" v-model="value.travel_method" v-on:change="chg_method">
+                  <input type="radio" :id="'other' + key" value="other" v-model="value.travel_method" v-on:change="chg_method($event, value)">
                   <label :class="{'active': 'other' === value.travel_method}" :for="'other' + key">其他，包括紅色小巴、邨巴、街渡等</label>
                 </div>
               </div>
@@ -75,7 +75,7 @@
                 <div class="col-xs-6">
                   <label for="mtr_line_from" class="">起點路線</label>
                   <p>
-                  <select id="mtr_line_from" v-model="value.mtr_line_from" v-on:change="chg_line_from">
+                  <select id="mtr_line_from" v-model="value.mtr_line_from" v-on:change="chg_line_from($event, value)">
                     <option v-for="option in mtr_lines_from()" v-bind:value="option.ld">
                       {{ option.ln }}
                     </option>
@@ -87,7 +87,7 @@
                 <div class="col-xs-6">
                   <label for="mtr_stn_from" class="">起點車站</label>
                   <p>
-                  <select id="mtr_stn_from" v-model="value.mtr_stn_from" v-on:change="chg_stn_from">
+                  <select id="mtr_stn_from" v-model="value.mtr_stn_from" v-on:change="chg_stn_from($event, value)">
                     <option v-for="option in mtr_stns_from(value)" v-bind:value="option.sd">
                       {{ option.sn }}
                     </option>
@@ -101,7 +101,7 @@
                 <div class="col-xs-6">
                   <label for="mtr_line_to" class="">終點路線</label>
                   <p>
-                  <select id="mtr_line_to" v-model="value.mtr_line_to" v-on:change="chg_line_to">
+                  <select id="mtr_line_to" v-model="value.mtr_line_to" v-on:change="chg_line_to($event, value)">
                     <option v-for="option in mtr_lines_to()" v-bind:value="option.ld">
                       {{ option.ln }}
                     </option>
@@ -113,7 +113,7 @@
                 <div class="col-xs-6">
                   <label for="mtr_stn_to" class="">終點車站</label>
                   <p>
-                  <select id="mtr_stn_to" v-model="value.mtr_stn_to" v-on:change="chg_stn_to">
+                  <select id="mtr_stn_to" v-model="value.mtr_stn_to" v-on:change="chg_stn_to($event, value)">
                     <option v-for="option in mtr_stns_to(value)" v-bind:value="option.sd">
                       {{ option.sn }}
                     </option>
@@ -160,9 +160,9 @@
                     </template>
                   </autocomplete-input>
                   <ul>
-                    <li v-for="(frs, index) in value.bus_fare_options" >
-                      <a class="br-fare" :class="{'active' : frs.active}" href="javascript:void(0);"
-                          @click="pick2(value, {'fare': frs.fare, 'index': index, 'keyword': value.keyword, 'optr': frs.o})">
+                    <li v-for="(frs, index) in value.bus_fare_options">
+                      <a class="br-fare" :class="{'active' : value.bus_fare_options[index].active === 1}" href="javascript:void(0);" :key="frs.dest"
+                          @click="pick2(value, {'fare': frs.fare, 'index': index, 'keyword': value.keyword, 'optr': frs.o, 'frs': frs})">
                         <span class="br-fare-fee">${{ frs.fare }}</span> {{ frs.dest }}
                       </a>
                     </li>
@@ -181,7 +181,7 @@
                   <label for="duty_expense_30" class="lbl-vc text-right">月費（＄）</label>
                 </div>
                 <div class="col-xs-5 col-sm-7">
-                  <p><input id="duty_expense_30" class="form-control" type="number" step="0.1" placeholder="請輸入金額" min="0" max="600000" v-model="value.duty_expense_30"></p>
+                  <p><input id="duty_expense_30" class="form-control" type="number" step="0.1" placeholder="請輸入金額" min="0" max="600000" v-model="value.duty_expense_30" v-on:change="chg_monthly($event, value)"></p>
                 </div>
               </div>
 
@@ -197,7 +197,7 @@
                   <label for="duty_expense" class="lbl-vc text-right">去程車費（＄）</label>
                 </div>
                 <div class="col-xs-5 col-sm-7">
-                  <p><input id="duty_expense" class="form-control" type="number" step="0.1" placeholder="請輸入金額" min="0" max="600000" v-model="value.duty_expense"></p>
+                  <p><input id="duty_expense" class="form-control" type="number" step="0.1" placeholder="請輸入金額" min="0" max="600000" v-model="value.duty_expense" v-on:change="chg_other($event, value)"></p>
                 </div>
               </div>
 
@@ -273,7 +273,7 @@
             <p><a href="https://carrielamgov.hk01.com/section/%E6%96%BD%E6%94%BF%E8%BF%BD%E8%B9%A4" title="追蹤特首其他施政承諾" class="ext-link" target="_blank">追蹤特首其他施政承諾</a></p>
             -->
             <hr>
-            <p>資料來源：<br>政府資料一線通、 港鐵公司、相關專營巴士公司網頁</p>
+            <p>資料來源：<br>政府資料一線通、運輸署、港鐵公司、相關專營巴士公司網頁</p>
             <p class="text-muted"><small>補貼金額僅供參考。車資以成人單程八達通計算，未包括港鐵八達通車費97折優惠。機場快線車費不計算即日來回優惠。每月日數假設為30天。</small></p>
           </div>
         </div>
@@ -285,6 +285,7 @@
 <script>
 import vueSlider from 'vue-slider-component';
 import axios from 'axios';
+import * as TrackEvent from './trackEvent.js'
 require('../assets/sass/style.scss');
 const _ = require('lodash/core');
 
@@ -893,6 +894,17 @@ let mtr_stns = [
  }
 ];
 
+function generateItemID(inIndex) {
+  let index = inIndex | 0
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1)
+  }
+  let randID = s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4()
+  return `${randID}-${Date.now()}-${index}`
+}
+
 export default {
   name: 'app',
   components: {
@@ -930,9 +942,12 @@ export default {
           mtr_line_to: 1,
           mtr_stn_to: 2,
           bus_fare_options: [],
-          bus_pay: 0
+          bus_pay: 0,
+          itemID: generateItemID(0)
         }
-      ]
+      ],
+      entrySource: '',
+      firstInteraction: 1
     }
   },
   computed: {
@@ -1003,8 +1018,13 @@ export default {
           mtr_line_to: 1,
           mtr_stn_to: 2,
           bus_fare_options: [],
-          bus_pay: 0
-        });
+          bus_pay: 0,
+          itemID: generateItemID(index + 1)
+        })
+        this.fireEvent(this.event_cate + '_' + 'trip', 'click', {
+          action: 'add',
+          button: index + 1
+        })
       } catch(e)
       {
         console.log(e);
@@ -1012,7 +1032,11 @@ export default {
     },
     removeRow: function (index) {
       if (this.rows.length > 1) {
-        this.rows.splice(index, 1);
+        this.rows.splice(index, 1)
+        this.fireEvent(this.event_cate + '_' + 'trip', 'click', {
+          action: 'remove',
+          button: index
+        })
       }
     },
     headline2 (self) {
@@ -1050,27 +1074,56 @@ export default {
 
       return self.bus_pay
     },
-    chg_method (e) {
-      let type = 'method';
-      this.$ga.event('method', 'method-change', 'type-' + this.travel_method, 1)
+    chg_return (e) {
+      this.fireEvent(this.event_cate + '_' + 'return_trip', 'click', {return_trip: e.target.checked})
     },
-    chg_line_from (e) {
-      this.$ga.event('fare', 'fare-change', 'mtr-line-from-' + this.mtr_line_from, 1)
+    chg_method (e, self) {
+      this.fireEvent(this.event_cate + '_' + 'method', 'click', {type: self.travel_method, trip_id: self.itemID})
     },
-    chg_stn_from (e) {
-      this.$ga.event('fare', 'fare-change', 'mtr-stn-from-' + this.mtr_stn_from, 1)
+    chg_line_from (e, self) {
+      let from = _.filter(mtr_lines, { 'ld': self.mtr_line_from })[0].ln
+      let to = _.filter(mtr_lines, { 'ld': self.mtr_line_to })[0].ln
+      this.fireEvent(this.event_cate + '_' + 'mtr_line', 'select', {from: from, to: to, trip_id: self.itemID})
     },
-    chg_line_to (e) {
-      this.$ga.event('fare', 'fare-change', 'mtr-line-to-' + this.mtr_line_to, 1)
+    chg_stn_from (e, self) {
+      let from = _.filter(mtr_stns, { 'sd': self.mtr_stn_from })[0].sn
+      let to = _.filter(mtr_stns, { 'sd': self.mtr_stn_to })[0].sn
+      this.fireEvent(this.event_cate + '_' + 'mtr_stn', 'select', {
+        from: from,
+        to: to,
+        trip_id: self.itemID,
+        oneway_fare: this.mtr_fee({mtr_stn_from: self.mtr_stn_from, mtr_stn_to: self.mtr_stn_to})
+      })
     },
-    chg_stn_to (e) {
-      this.$ga.event('fare', 'fare-change', 'mtr-stn-to-' + this.mtr_stn_to, 1)
+    chg_line_to (e, self) {
+      let from = _.filter(mtr_lines, { 'ld': self.mtr_line_from })[0].ln
+      let to = _.filter(mtr_lines, { 'ld': self.mtr_line_to })[0].ln
+      this.fireEvent(this.event_cate + '_' + 'mtr_line', 'select', {from: from, to: to, trip_id: self.itemID})
+    },
+    chg_stn_to (e, self) {
+      let from = _.filter(mtr_stns, { 'sd': self.mtr_stn_from })[0].sn
+      let to = _.filter(mtr_stns, { 'sd': self.mtr_stn_to })[0].sn
+      this.fireEvent(this.event_cate + '_' + 'mtr_stn', 'select', {
+        from: from,
+        to: to,
+        trip_id: self.itemID,
+        oneway_fare: this.mtr_fee({mtr_stn_from: self.mtr_stn_from, mtr_stn_to: self.mtr_stn_to})
+      })
+    },
+    chg_monthly (e, self) {
+      this.fireEvent(this.event_cate + '_' + 'monthly', 'change', {monthly_value: parseFloat(e.target.value), trip_id: self.itemID})
+    },
+    chg_other (e, self) {
+      this.fireEvent(this.event_cate + '_' + 'other', 'change', {oneway_fare: parseFloat(e.target.value), trip_id: self.itemID})
     },
     chg_dutyday (e) {
-      this.$ga.event('duty', 'duty-change', 'duty-days-' + this.duty_days, 1)
+      this.fireEvent(this.event_cate + '_' + 'dutyday', 'change', {dutyday: this.duty_days, holiday: 30 - this.duty_days})
     },
     chg_holiday (e) {
-      this.$ga.event('holiday', 'holiday-change', 'holiday-days-' + this.holiday_expense, 1)
+      let holiday_expense = (vm.holiday_expense === '') ? 0 : parseFloat(vm.holiday_expense)
+      this.fireEvent(this.event_cate + '_' + 'holiday_expense', 'change', {
+        holiday_daily_expense: holiday_expense,
+        holiday_total_expenses: (30 - this.duty_days) * holiday_expense})
     },
     onOptionSelect (option) {
       // console.log('Selected option:', option)
@@ -1079,23 +1132,119 @@ export default {
       this.bus_pay = 0
     },
     pick1 (self, fare) {
-      // console.log('Selected faressss:', self, fare)
+      console.log('Selected faressss:', self, fare, fare.f[0].dest)
       self.bus_fare_options = fare.f
       self.bus_route = fare.r
-      if (1 == fare.f.length) {
+      if (1 === fare.f.length) {
         self.bus_pay = fare.f[0].fare
         self.bus_fare_options[0].active = true
-        this.$ga.event('fare', 'bus-change1', 'route-' + fare.o + '-' + self.bus_route + '-' + self.bus_pay, 1)
+        // this.fireEvent(this.event_cate + '_' + 'bus_search', 'bus-change1', 'route-' + fare.o + '-' + self.bus_route + '-' + self.bus_pay)
+        let bus_map = {
+          '九巴': 'kmb',
+          '新巴': 'nwfb',
+          '城巴': 'ctb',
+          '綠色小巴': 'green'
+        };
+        this.fireEvent(this.event_cate + '_' + 'bus_search', 'search', {
+          type: bus_map[fare.o],
+          line: self.bus_route,
+          route: fare.f[0].dest,
+          trip_id: self.itemID,
+          oneway_fare: parseFloat(self.bus_pay)
+        })
       }
     },
     pick2 (self, in_obj) {
-      // console.log('Selected fare:', fare)
+      console.log('Selected fare:', self, in_obj)
       self.bus_pay = in_obj.fare
-      self.bus_fare_options.map(o => {
-        o.active = false
+      let new_bus_fare_options = self.bus_fare_options
+      console.log(self.bus_fare_options)
+
+      new_bus_fare_options.map(o => {
+        o.active = 0
       })
-      self.bus_fare_options[in_obj.index].active = true
-      this.$ga.event('fare', 'bus-change2', 'route-' + '九巴' + self.bus_route + '-' + self.bus_fare_options[in_obj.index].fare, 1)
+      new_bus_fare_options[in_obj.index].active = 1
+      console.log(new_bus_fare_options)
+
+      self.bus_fare_options = new_bus_fare_options
+      // this.fireEvent(this.event_cate + '_' + 'bus_search', 'bus-change2', 'route-' + '九巴' + self.bus_route + '-' + self.bus_fare_options[in_obj.index].fare)
+      // this.fireEvent(this.event_cate + '_' + 'bus_search', 'select', {
+      //   type: in_obj.fare.o,
+      //   line: self.bus_route
+      // })
+    },
+    detectSource (callback) {
+      let linkText = window.location.href
+      let article_id = (linkText.match(/utm_source=inline_article/)) ? linkText.match(/utm_source=inline_article_(.*?)(&|$|\?)/)[1] : 'organic'
+      this.entrySource = (linkText.match(/#/)) ? linkText.match(/#(.*?)(&|$|\?)/)[1] : 'organic'
+
+      switch (this.entrySource) {
+        case 'article':
+        case 'base':
+        case 'issue':
+          break
+        default:
+          this.entrySource = 'organic'
+          // fireArticlePV(removehash(window.location.href))
+      }
+
+      if (callback) {
+        callback(this.entrySource, article_id)
+      }
+    },
+    // fireEvent (e_c, e_a, e_n) {
+    //   // Use VueAnalytics
+    //   let vm = this
+    //   let holiday_expense = (vm.holiday_expense === '') ? 0 : parseFloat(vm.holiday_expense)
+
+    //   if (vm.firstInteraction === 1 && vm.entrySource !== 'organic' && vm.entrySource !== 'base') {
+    //     vm.firstInteraction--
+    //     vm.$ga.page({
+    //       page: '/#' + vm.entrySource,
+    //       title: document.title,
+    //       location: window.location.href
+    //     })
+    //   }
+    //   vm.$ga.event(e_c, e_a, {
+    //     ...e_n,
+    //     anonymous_id: TrackEvent.get
+    //   }, 1)
+    //   vm.$ga.event(vm.event_cate + '_' + 'result', 'change', {
+    //     return_trip: vm.two_way,
+    //     trips: vm.rows,
+    //     dutyday: vm.duty_days,
+    //     holiday: 30 - vm.duty_days,
+    //     holiday_daily_expense: holiday_expense,
+    //     holiday_total_expenses: (30 - vm.duty_days) * holiday_expense,
+    //     total_expense: parseFloat(parseFloat(vm.total_fare).toFixed(1)),
+    //     total_subsidy: parseFloat(parseFloat(vm.back_pay).toFixed(1))
+    //   }, 1)
+    // },
+    fireEvent (e_c, e_a, e_n) {
+      let vm = this
+      let holiday_expense = (vm.holiday_expense === '') ? 0 : parseFloat(vm.holiday_expense)
+
+      if (vm.firstInteraction === 1 && vm.entrySource !== 'organic' && vm.entrySource !== 'base') {
+        vm.firstInteraction--
+        TrackEvent.fireArticlePV(TrackEvent.removehash(window.location.href))
+      }
+      let newE_n = e_n
+      newE_n['anonymous_id'] = TrackEvent.getAnonymousId()
+      newE_n['ts'] = Date.now()
+
+      TrackEvent.fireEvent(e_c, e_a, newE_n, 1)
+      TrackEvent.fireEvent(vm.event_cate + '_' + 'result', 'change', {
+        return_trip: vm.two_way,
+        trip_id: vm.rows.map(o => o.itemID),
+        dutyday: vm.duty_days,
+        holiday: 30 - vm.duty_days,
+        holiday_daily_expense: holiday_expense,
+        holiday_total_expenses: (30 - vm.duty_days) * holiday_expense,
+        total_expense: parseFloat(parseFloat(vm.total_fare).toFixed(1)),
+        total_subsidy: parseFloat(parseFloat(vm.back_pay).toFixed(1)),
+        anonymous_id: newE_n['anonymous_id'],
+        ts: newE_n['ts']
+      }, 1)
     }
   },
   created: function () {
@@ -1125,6 +1274,28 @@ export default {
     .catch(function (error) {
       console.log(error);
     });
+  },
+  mounted () {
+    let vm = this
+
+    TrackEvent.fireMapPV(TrackEvent.removehash(window.location.href))
+
+    // onAnalyticsReady
+    vm.detectSource(function (source, article_id) {
+      if (source === 'organic') {
+        // // Use VueAnalytics
+        // vm.$ga.page({
+        //   page: '/',
+        //   title: document.title,
+        //   location: window.location.href
+        // })
+        TrackEvent.fireArticlePV(TrackEvent.removehash(window.location.href))
+      }
+      TrackEvent.fireEvent(vm.event_cate + '_landing', 'view', {
+        article_id: article_id,
+        source: source
+      })
+    })
   }
 }
 </script>
