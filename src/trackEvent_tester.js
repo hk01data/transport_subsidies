@@ -33,11 +33,11 @@ var myTracker = new trackerClient({
 }, false);
 
 /* Config the selected article detail */
-const page_path = "/\u793e\u6703\u65b0\u805e/010101/";
+const page_path = "/\u793e\u6703\u65b0\u805e/240258/";
 const author = "\u7c21\u6d69\u5fb7, \u6881\u9038\u98a8, \u856d\u8f1d\u6d69";  // 簡浩德 梁逸風 蕭輝浩
 const channel = "\u793e\u6703\u65b0\u805e"; // 社會新聞
 const section = "\u793e\u6703\u65b0\u805e"; // 社會新聞
-const article_id = "010101";
+const article_id = "240258";
 
 function fireArticlePV(url) {
     try {

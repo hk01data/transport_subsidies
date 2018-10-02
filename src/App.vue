@@ -285,7 +285,7 @@
 <script>
 import vueSlider from 'vue-slider-component';
 import axios from 'axios';
-import * as TrackEvent from './trackEvent_tester.js'
+import * as TrackEvent from './trackEvent_prod.js'
 require('../assets/sass/style.scss');
 const _ = require('lodash/core');
 
@@ -1193,7 +1193,8 @@ export default {
       newRows[fIndex] = newThisRow
       this.rows = newRows
 
-      self.bus_pay = parseFloat(in_obj.fare)
+      let oneway_fare = (in_obj.fare.indexOf('免費') === -1) ? parseFloat(in_obj.fare) : 0
+      self.bus_pay = oneway_fare
 
       let bus_map = {
         '九巴': 'kmb',
@@ -1206,7 +1207,7 @@ export default {
         type: bus_map[self.bus_optr],
         line: self.bus_route,
         section: in_obj.dest,
-        oneway_fare: parseFloat(in_obj.fare),
+        oneway_fare: oneway_fare,
         trip_id: self.itemID
       })
     },
@@ -1263,6 +1264,7 @@ export default {
 
       if (vm.firstInteraction === 1 && vm.entrySource !== 'organic' && vm.entrySource !== 'base') {
         vm.firstInteraction--
+        console.log(`[firstInteraction] `, vm.entrySource)
         TrackEvent.fireArticlePV(TrackEvent.removehash(window.location.href))
       }
       let newE_n = e_n
@@ -1326,6 +1328,7 @@ export default {
         //   title: document.title,
         //   location: window.location.href
         // })
+        console.log(`[AFTER] `, source)
         TrackEvent.fireArticlePV(TrackEvent.removehash(window.location.href))
       }
       TrackEvent.fireEvent(vm.event_cate + '_landing', 'view', {
