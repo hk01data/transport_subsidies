@@ -26,7 +26,7 @@ var myTracker = new trackerClient({
     },
     Piwik: {
         trackingUrl: "https://track.hk01.com/v1web/piwik.php",  // replace with your piwik tracking url
-        siteId: 5,  // replace with your piwik site ID
+        siteId: 6,  // replace with your piwik site ID
         userId: getAnonymousId(), // replace with user ID, should be same as MEMBER_ID/ANONYMOUS_ID
         isSPA: true // if the page is single page application
     }
