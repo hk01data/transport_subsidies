@@ -53,8 +53,18 @@
                 </div>
 
                 <div class="a__option col-xs-6">
+                  <input type="radio" :id="'villagebus' + key" value="villagebus" v-model="value.travel_method" v-on:change="chg_method($event, value)">
+                  <label :class="{'active': 'villagebus' === value.travel_method}" :for="'villagebus' + key">邨巴</label>
+                </div>
+
+                <div class="a__option col-xs-6">
+                  <input type="radio" :id="'boatferry' + key" value="boatferry" v-model="value.travel_method" v-on:change="chg_method($event, value)">
+                  <label :class="{'active': 'boatferry' === value.travel_method}" :for="'boatferry' + key">渡輪/街渡</label>
+                </div>
+
+                <div class="a__option col-xs-6">
                   <input type="radio" :id="'other' + key" value="other" v-model="value.travel_method" v-on:change="chg_method($event, value)">
-                  <label :class="{'active': 'other' === value.travel_method}" :for="'other' + key">其他，包括紅色小巴、邨巴、街渡等</label>
+                  <label :class="{'active': 'other' === value.travel_method}" :for="'other' + key">其他，包括紅色小巴等</label>
                 </div>
               </div>
             </div>
@@ -191,6 +201,32 @@
             </div>
 
 
+            <div class="villiagebus-section" v-if="'villagebus' == value.travel_method">
+              <div class="row">
+                <div class="col-xs-12">
+                  <select v-on:change="chg_villagebus($event, value)" v-model="value.villagebus_selected">
+                    <option selected disabled value="0">==請選擇路線==</option>
+                    <option v-for="(frs, index) in villagebus_fares" :key="frs.route + '_' + frs.dest" :value="index">{{ `${frs.route} ($${frs.fare}) ${frs.dest}` }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="boatferry-section" v-if="'boatferry' == value.travel_method">
+              <div class="row">
+                <div class="col-xs-12">
+                  <select v-on:change="chg_boatferry($event, value)" v-model="value.boatferry_selected">
+                    <option selected disabled value="0">==請選擇渡輪路線==</option>
+                    <option v-for="(frs, index) in boat_fares" :key="frs.route + '_' + frs.dest" :value="frs.route">{{ `$${frs.fare} - ${frs.dest}` }}</option>
+                    <option selected disabled value="0">==請選擇街渡路線==</option>
+                    <option v-for="(frs, index) in ferry_fares" :key="frs.route + '_' + frs.dest" :value="frs.route">{{ `$${frs.fare} - ${frs.dest}` }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+
             <div class="non-mtr-section" v-if="'other' == value.travel_method">
               <div class="row">
                 <div class="col-xs-7 col-sm-5">
@@ -286,6 +322,7 @@
 import vueSlider from 'vue-slider-component';
 import axios from 'axios';
 import * as TrackEvent from './trackEvent_prod.js'
+// import * as TrackEvent from './trackEvent_tester.js'
 require('../assets/sass/style.scss');
 const _ = require('lodash/core');
 
@@ -916,7 +953,10 @@ export default {
       sheadline2: '去程交通花費是...',
       mtr_fares: [],
       bus_fares: [],
-      travel_method: 'bus',
+      villagebus_fares: [],
+      boat_fares: [],
+      ferry_fares: [],
+      travel_method: '',
       duty_expense: '',
       duty_expense_30: '',
       duty_days: 21,
@@ -943,6 +983,10 @@ export default {
           mtr_stn_to: 2,
           bus_fare_options: [],
           bus_pay: 0,
+          villagebus_selected: '0',
+          villagebus_pay: 0,
+          boatferry_selected: '0',
+          boatferry_pay: 0,
           itemID: generateItemID(0)
         }
       ],
@@ -967,6 +1011,10 @@ export default {
           the_exp += parseFloat(vm.mtr_fee(o))
         } else if ('bus' == o.travel_method) {
           the_exp += parseFloat(vm.bus_fee(o))
+        } else if ('villagebus' == o.travel_method) {
+          the_exp += parseFloat(vm.villagebus_fee(o))
+        } else if ('boatferry' == o.travel_method) {
+          the_exp += parseFloat(vm.boatferry_fee(o))
         } else if ('monthly' == o.travel_method) {
           the_exp += 0
         } else if ('other' == o.travel_method) {
@@ -1020,6 +1068,10 @@ export default {
           mtr_stn_to: 2,
           bus_fare_options: [],
           bus_pay: 0,
+          villagebus_selected: '',
+          villagebus_pay: 0,
+          boatferry_selected: '',
+          boatferry_pay: 0,
           itemID: itemID
         })
         this.fireEvent(this.event_cate + '_' + 'trip', 'click', {
@@ -1077,6 +1129,16 @@ export default {
       let vm = self;
 
       return self.bus_pay
+    },
+    villagebus_fee (self) {
+      let vm = self;
+
+      return self.villagebus_pay;
+    },
+    boatferry_fee (self) {
+      let vm = self;
+
+      return self.boatferry_pay;
     },
     chg_return (e) {
       this.fireEvent(this.event_cate + '_' + 'return_trip', 'click', {return_trip: e.target.checked})
@@ -1211,6 +1273,54 @@ export default {
         trip_id: self.itemID
       })
     },
+    chg_villagebus (e, self) {
+      let vm = this;
+      let index = e.target.value;
+      let route = vm.villagebus_fares[index].route;
+      let fare = vm.villagebus_fares[index].fare;
+      let dest = vm.villagebus_fares[index].dest;
+      console.log('chg_villagebus', route, fare, dest, vm.villagebus_fares[index].optr);
+      self.villagebus_pay = parseFloat(fare);
+
+      this.fireEvent(this.event_cate + '_' + 'villagebus', 'select', {
+        type: vm.villagebus_fares[index].optr,
+        line: route,
+        section: dest,
+        oneway_fare: fare,
+        trip_id: self.itemID
+      })
+    },
+    chg_boatferry (e, self) {
+      let vm = this;
+      let index = e.target.value;
+      let arr = [];
+      if (index.indexOf('boat') !== -1) {
+        arr = vm.boat_fares;
+      } else {
+        arr = vm.ferry_fares;
+      }
+      let el = arr.filter(o => '' + o.route === '' + index);
+      let route = '-';
+      let fare = '-';
+      let dest = '-';
+      let optr = '-';
+      if (el.length) {
+        route = el[0].route;
+        fare = el[0].fare;
+        dest = el[0].dest;
+        optr = el[0].optr;
+        self.boatferry_pay = parseFloat(fare);
+      }
+      console.log('chg_boatferry', index, el, optr);
+
+      this.fireEvent(this.event_cate + '_' + 'boatferry', 'select', {
+        type: optr,
+        line: route,
+        section: dest,
+        oneway_fare: fare,
+        trip_id: self.itemID
+      })
+    },
     detectSource (callback) {
       let linkText = window.location.href
       let article_id = (linkText.match(/utm_source=inline_article/)) ? linkText.match(/utm_source=inline_article_(.*?)(&|$|\?)/)[1] : 'organic'
@@ -1309,6 +1419,30 @@ export default {
 
         return o
       })
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    axios.get('assets/all_villageBus_out.json')
+    .then(function (response) {
+      vm.villagebus_fares = response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    axios.get('assets/boat.json')
+    .then(function (response) {
+      vm.boat_fares = response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    axios.get('assets/ferry.json')
+    .then(function (response) {
+      vm.ferry_fares = response.data;
     })
     .catch(function (error) {
       console.log(error);
