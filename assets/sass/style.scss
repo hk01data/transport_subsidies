@@ -36,14 +36,26 @@ select {
   }
 }
 .result {
-  h2 {
+  margin: 0;
+  z-index: 401;
+  background-color: #FAFAFA;
+  h3 {
     margin: -2px 0 4px;
   }
   h4 {
     margin: 4px 0;
     padding: 4px 0;
-    border-top: 1px solid #EFEFEF;
+    // border-top: 1px solid #EFEFEF;
   }
+}
+.sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+.sticky + .row {
+  padding-top: 70px;
 }
 .lbl-vc {
   padding: 6px 12px;
