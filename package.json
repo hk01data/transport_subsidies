@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "jquery": "^3.2.1",
+    "jquery": "^3.5.0",
     "lodash": "^4.17.4",
     "vue": "^2.3.3",
     "vue-analytics": "git://github.com/felixchanhk01/vue-analytics.git#vue-piwik-5",
