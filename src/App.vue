@@ -9,13 +9,21 @@
           </a>
         </p>
         <h2 class="text-center">補貼你有計</h2>
-        <p class="text-muted text-center"><small>交通補貼措施（2018年更新）</small></p>
+        <!-- Jun2020 -->
+        <p class="text-muted text-center"><small>交通補貼措施（2020年適用）</small></p>
       </div>
     </header>
 
 
 
     <fieldset class="form-group">
+      <div class="row result">
+        <div class="col-xs-12 text-center">
+          <h4>每月交通總開支：{{ formatPrice(total_fare) }}</h4>
+          <h3>估計可獲補貼：{{ formatPrice(back_pay) }}</h3>
+        </div>
+      </div>
+      
       <div class="row">
         <div class="col-xs-12">
           <label for="two-way">
@@ -135,6 +143,8 @@
               <div class="row">
                 <div class="col-xs-12 col-sm-4">
                   <p class="">來回票價*： <strong>$ {{ mtr_fee(value) * 2 }}</strong> <small>（單程 $ {{ mtr_fee(value) }}）</small></p>
+                  <!-- Jun2020 -->
+                  <!-- <p class="">來回票價*： <strong>$ {{ formatPrice(mtr_fee(value) * 2 * 0.8) }}</strong> <small>（單程 $ {{ formatPrice(mtr_fee(value) * 0.8)}}）</small></p> -->
                   <p class=""></p>
                 </div>
               </div>
@@ -292,13 +302,6 @@
           </div>
         </div>
       </div>
-
-      <div class="row result">
-        <div class="col-xs-12 text-center">
-          <h4>每月交通總開支：{{ formatPrice(total_fare) }}</h4>
-          <h2>估計可獲補貼：{{ formatPrice(back_pay) }}</h2>
-        </div>
-      </div>
     </fieldset>
 
     <footer>
@@ -310,7 +313,9 @@
             -->
             <hr>
             <p>資料來源：<br>政府資料一線通、運輸署、港鐵公司、相關專營巴士公司網頁</p>
-            <p class="text-muted"><small>補貼金額僅供參考。車資以成人單程八達通計算，未包括港鐵八達通車費97折優惠。機場快線車費不計算即日來回優惠。每月日數假設為30天。</small></p>
+            <!-- <p class="text-muted"><small>補貼金額僅供參考。車資以成人單程八達通計算，未包括港鐵八達通車費97折優惠。機場快線車費不計算即日來回優惠。每月日數假設為30天。</small></p> -->
+            <p class="text-muted"><small>補貼金額僅供參考。車資以成人單程八達通計算。機場快線車費不計算即日來回優惠。每月日數假設為30天。</small></p>
+
           </div>
         </div>
       </div>
@@ -1037,7 +1042,12 @@ export default {
       return (commu + this.holiday_expense*this.holiday_days*this.holiday_in_count)
     },
     back_pay () {
-      let pay = 0, min_exp = 400, cap = 300, rate = 0.25;
+      // let pay = 0, min_exp = 400, cap = 300, rate = 0.25;
+      // let pay = 0, min_exp = 400, cap = 400, rate = 0.3;
+      // 2020 Jun 23 update
+      let pay = 0, min_exp = 200, cap = 400, rate = 0.33;
+
+
       if (min_exp < this.total_fare) {
         pay = (this.total_fare - min_exp) * rate;
       } else {
@@ -1120,7 +1130,10 @@ export default {
       let vm = this;
       let select_jrn = _.filter(vm.mtr_fares, { 'SD': self.mtr_stn_from, 'DD': self.mtr_stn_to })
       if (select_jrn.length == 1) {
-        return select_jrn[0]['AD']
+        // Jun2020
+        let val = select_jrn[0]['AD'] * 0.8;
+        val = Math.round(val * 10) / 10;
+        return val;
       } else {
         return 0
       }
@@ -1323,7 +1336,7 @@ export default {
     },
     detectSource (callback) {
       let linkText = window.location.href
-      let article_id = (linkText.match(/utm_source=inline_article/)) ? linkText.match(/utm_source=inline_article_(.*?)(&|$|\?)/)[1] : 'organic'
+      let article_id = (linkText.match(/utm_source=inline_article/)) ? linkText.match(/utm_source=inline_article_(.*?)(&|$|\?)/)[1] : window.location.href
       this.entrySource = (linkText.match(/#/)) ? linkText.match(/#(.*?)(&|$|\?)/)[1] : 'organic'
 
       switch (this.entrySource) {
@@ -1452,6 +1465,25 @@ export default {
     let vm = this
 
     TrackEvent.fireMapPV(TrackEvent.removehash(window.location.href))
+
+    // When the user scrolls the page, execute myFunction 
+    window.onscroll = function() {myFunction()};
+
+    // Get the navbar
+    var navbar = document.querySelector(".result");
+
+    // Get the offset position of the navbar
+    var sticky = navbar.offsetTop;
+
+    // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
+    function myFunction() {
+      if (window.pageYOffset >= sticky) {
+        navbar.classList.add("sticky")
+      } else {
+        navbar.classList.remove("sticky");
+      }
+    }
+
 
     // onAnalyticsReady
     vm.detectSource(function (source, article_id) {
