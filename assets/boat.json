@@ -1,128 +1,141 @@
-[
-  {
-    "route": "boat-1",
-    "optr": "翠華船務",
-    "type": "villageBus",
-    "dest": "馬料水↔東平洲",
-    "fare": 90
-  },
-  {
-    "route": "boat-2",
-    "optr": "翠華船務",
-    "type": "villageBus",
-    "dest": "馬料水↔塔門（星期一至五）",
-    "fare": 18
-  },
-  {
-    "route": "boat-3",
-    "optr": "翠華船務",
-    "type": "villageBus",
-    "dest": "馬料水↔塔門（星期六、日及公眾假期）",
-    "fare": 28
-  },
-  {
-    "route": "boat-4",
-    "optr": "翠華船務",
-    "type": "villageBus",
-    "dest": "塔門↔黃石碼頭（星期一至五）",
-    "fare": 9.5
-  },
-  {
-    "route": "boat-5",
-    "optr": "翠華船務",
-    "type": "villageBus",
-    "dest": "塔門↔黃石碼頭（星期六、日及公眾假期）",
-    "fare": 14
-  },
-  {
-    "route": "boat-6",
-    "optr": "翠華船務",
-    "type": "villageBus",
-    "dest": "黃石碼頭↔灣仔（南風灣）/赤徑（普通船）",
-    "fare": 15
-  },
-  {
-    "route": "boat-7",
-    "optr": "翠華船務",
-    "type": "villageBus",
-    "dest": "黃石碼頭↔灣仔（南風灣 ）/赤徑（快船）",
-    "fare": 18
-  },
-  {
-    "route": "boat-8",
-    "optr": "翠華船務",
-    "type": "villageBus",
-    "dest": "香港仔/赤柱↔蒲台島（只在逢星期二、四、六服務(公眾假期除外)，蒲台島居民價）",
-    "fare": 18
-  },
-  {
-    "route": "boat-9",
-    "optr": "翠華船務",
-    "type": "villageBus",
-    "dest": "香港仔/赤柱↔蒲台島（只在逢星期二、四、六服務(公眾假期除外)，非蒲台島居民）",
-    "fare": 25
-  },
-  {
-    "route": "boat-10",
-    "optr": "翠華船務",
-    "type": "villageBus",
-    "dest": "香港仔/赤柱↔蒲台島（星期日及公眾假期，蒲台島居民價）",
-    "fare": 20
-  },
-  {
-    "route": "boat-11",
-    "optr": "翠華船務",
-    "type": "villageBus",
-    "dest": "香港仔/赤柱↔蒲台島（星期日及公眾假期，非蒲台島居民價，來回）",
-    "fare": 50
-  },
-  {
-    "route": "boat-12",
-    "optr": "全記街渡",
-    "type": "villageBus",
-    "dest": "模達↔索罟灣",
-    "fare": 6
-  },
-  {
-    "route": "boat-13",
-    "optr": "全記街渡",
-    "type": "villageBus",
-    "dest": "香港仔↔模達",
-    "fare": 18
-  },
-  {
-    "route": "boat-14",
-    "optr": "珊瑚海航運",
-    "type": "villageBus",
-    "dest": "三家村↔東龍島（非東龍島居民，來回）",
-    "fare": 45
-  },
-  {
-    "route": "boat-15",
-    "optr": "珊瑚海航運",
-    "type": "villageBus",
-    "dest": "三家村↔東龍島（東龍島居民，單程）",
-    "fare": 15
-  },
-  {
-    "route": "boat-16",
-    "optr": "碧海船務",
-    "type": "villageBus",
-    "dest": "西灣河↔東龍島（非東龍島居民，來回）",
-    "fare": 55
-  },
-  {
-    "route": "boat-17",
-    "optr": "碧海船務",
-    "type": "villageBus",
-    "dest": "西灣河↔東龍島（東龍島居民，單程）",
-    "fare": 30
-  },
-  {
-    "route": "boat-18",
-    "optr": "香港仔小輪",
-    "type": "villageBus",
-    "dest": "香港仔↔鴨脷洲",
-    "fare": 2.5
-  }
+[{
+  "route": "boat-1",
+  "optr": "翠華船務",
+  "type": "villageBus",
+  "dest": "馬料水↔東平洲",
+  "fare": 90
+},
+{
+  "route": "boat-2",
+  "optr": "翠華船務",
+  "type": "villageBus",
+  "dest": "馬料水↔塔門（星期一至五）",
+  "fare": 18
+},
+{
+  "route": "boat-3",
+  "optr": "翠華船務",
+  "type": "villageBus",
+  "dest": "馬料水↔塔門（星期六、日及公眾假期）",
+  "fare": 28
+},
+{
+  "route": "boat-4",
+  "optr": "翠華船務",
+  "type": "villageBus",
+  "dest": "塔門↔黃石碼頭（星期一至五）",
+  "fare": 9.5
+},
+{
+  "route": "boat-5",
+  "optr": "翠華船務",
+  "type": "villageBus",
+  "dest": "塔門↔黃石碼頭（星期六、日及公眾假期）",
+  "fare": 14
+},
+{
+  "route": "boat-6",
+  "optr": "翠華船務",
+  "type": "villageBus",
+  "dest": "黃石碼頭↔灣仔（南風灣）/赤徑（普通船）",
+  "fare": 15
+},
+{
+  "route": "boat-7",
+  "optr": "翠華船務",
+  "type": "villageBus",
+  "dest": "黃石碼頭↔灣仔（南風灣 ）/赤徑（快船）",
+  "fare": 18
+},
+{
+  "route": "boat-8",
+  "optr": "翠華船務",
+  "type": "villageBus",
+  "dest": "香港仔/赤柱↔蒲台島（只在逢星期二、四、六服務(公眾假期除外)，蒲台島居民價）",
+  "fare": 18
+},
+{
+  "route": "boat-9",
+  "optr": "翠華船務",
+  "type": "villageBus",
+  "dest": "香港仔/赤柱↔蒲台島（只在逢星期二、四、六服務(公眾假期除外)，非蒲台島居民）",
+  "fare": 25
+},
+{
+  "route": "boat-10",
+  "optr": "翠華船務",
+  "type": "villageBus",
+  "dest": "香港仔/赤柱↔蒲台島（星期日及公眾假期，蒲台島居民價）",
+  "fare": 20
+},
+{
+  "route": "boat-11",
+  "optr": "翠華船務",
+  "type": "villageBus",
+  "dest": "香港仔/赤柱↔蒲台島（星期日及公眾假期，非蒲台島居民價，來回）",
+  "fare": 50
+},
+{
+  "route": "boat-12",
+  "optr": "全記街渡",
+  "type": "villageBus",
+  "dest": "模達↔索罟灣",
+  "fare": 4.8
+},
+{
+  "route": "boat-13",
+  "optr": "全記街渡",
+  "type": "villageBus",
+  "dest": "香港仔↔模達",
+  "fare": 12.5
+},
+{
+  "route": "boat-14",
+  "optr": "珊瑚海航運",
+  "type": "villageBus",
+  "dest": "三家村↔東龍島（非東龍島居民）",
+  "fare": 45
+},
+{
+  "route": "boat-15",
+  "optr": "珊瑚海航運",
+  "type": "villageBus",
+  "dest": "三家村↔東龍島（東龍島居民，單程）",
+  "fare": 15
+},
+{
+  "route": "boat-16",
+  "optr": "碧海船務",
+  "type": "villageBus",
+  "dest": "西灣河↔東龍島（非東龍島居民，來回）",
+  "fare": 55
+},
+{
+  "route": "boat-17",
+  "optr": "碧海船務",
+  "type": "villageBus",
+  "dest": "西灣河↔東龍島（東龍島居民，單程）",
+  "fare": 30
+},
+{
+  "route": "boat-18",
+  "optr": "香港仔小輪",
+  "type": "villageBus",
+  "dest": "香港仔↔鴨脷洲",
+  "fare": 2.5
+},
+{
+  "route": "boat-19",
+  "optr": "翠華船務",
+  "type": "village Bus",
+  "dest": "香港仔 ↔北角村 ↔榕樹灣 ( 星期一至六)",
+  "fare": 19
+},
+{
+  "route": "boat-20",
+  "optr": "翠華船務",
+  "type": "village Bus",
+  "dest": "香港仔 ↔北角村 ↔榕樹灣（星期日及公眾假期)",
+  "fare": 21
+}
 ]
