@@ -9,8 +9,8 @@
           </a>
         </p>
         <h2 class="text-center">補貼你有計</h2>
-        <!-- Jun2020 -->
-        <p class="text-muted text-center"><small>交通補貼措施（2020年適用）</small></p>
+        <!-- 2021 Feb -->
+        <p class="text-muted text-center"><small>交通補貼措施（2021年適用）</small></p>
       </div>
     </header>
 
@@ -37,7 +37,7 @@
 
       <div class="jrn-cont">
       <div class="jrn-track">
-        <div v-for="(value, key) in rows">
+        <div v-for="(value, key) in rows" v-bind:key="key">
           <div class="jrn">
 
             <div class="row">
@@ -94,7 +94,7 @@
                   <label for="mtr_line_from" class="">起點路線</label>
                   <p>
                   <select id="mtr_line_from" v-model="value.mtr_line_from" v-on:change="chg_line_from($event, value)">
-                    <option v-for="option in mtr_lines_from()" v-bind:value="option.ld">
+                    <option v-for="(option, key) in mtr_lines_from()" v-bind:value="option.ld" v-bind:key="key">
                       {{ option.ln }}
                     </option>
                   </select>
@@ -106,7 +106,7 @@
                   <label for="mtr_stn_from" class="">起點車站</label>
                   <p>
                   <select id="mtr_stn_from" v-model="value.mtr_stn_from" v-on:change="chg_stn_from($event, value)">
-                    <option v-for="option in mtr_stns_from(value)" v-bind:value="option.sd">
+                    <option v-for="(option, key) in mtr_stns_from(value)" v-bind:value="option.sd" v-bind:key="key">
                       {{ option.sn }}
                     </option>
                   </select>
@@ -120,7 +120,7 @@
                   <label for="mtr_line_to" class="">終點路線</label>
                   <p>
                   <select id="mtr_line_to" v-model="value.mtr_line_to" v-on:change="chg_line_to($event, value)">
-                    <option v-for="option in mtr_lines_to()" v-bind:value="option.ld">
+                    <option v-for="(option, key) in mtr_lines_to()" v-bind:value="option.ld" v-bind:key="key">
                       {{ option.ln }}
                     </option>
                   </select>
@@ -132,7 +132,7 @@
                   <label for="mtr_stn_to" class="">終點車站</label>
                   <p>
                   <select id="mtr_stn_to" v-model="value.mtr_stn_to" v-on:change="chg_stn_to($event, value)">
-                    <option v-for="option in mtr_stns_to(value)" v-bind:value="option.sd">
+                    <option v-for="(option, key) in mtr_stns_to(value)" v-bind:value="option.sd" v-bind:key="key">
                       {{ option.sn }}
                     </option>
                   </select>
@@ -180,7 +180,7 @@
                     </template>
                   </autocomplete-input>
                   <ul>
-                    <li v-for="(frs, index) in value.bus_fare_options">
+                    <li v-for="(frs, index) in value.bus_fare_options" v-bind:key="index">
                       <a class="br-fare" :class="{'active' : value.bus_fare_options[index].active === 1}" href="javascript:void(0);" :key="frs.dest"
                           @click="pick2(value, {'fare': frs.fare, 'index': index, 'dest': frs.dest, 'frs': frs})">
                         <span class="br-fare-fee">${{ frs.fare }}</span> {{ frs.dest }}
@@ -228,9 +228,9 @@
                 <div class="col-xs-12">
                   <select v-on:change="chg_boatferry($event, value)" v-model="value.boatferry_selected">
                     <option selected disabled value="0">==請選擇渡輪路線==</option>
-                    <option v-for="(frs, index) in boat_fares" :key="frs.route + '_' + frs.dest" :value="frs.route">{{ `$${frs.fare} - ${frs.dest}` }}</option>
+                    <option v-for="frs in boat_fares" :key="frs.route + '_' + frs.dest" :value="frs.route">{{ `$${frs.fare} - ${frs.dest}` }}</option>
                     <option selected disabled value="0">==請選擇街渡路線==</option>
-                    <option v-for="(frs, index) in ferry_fares" :key="frs.route + '_' + frs.dest" :value="frs.route">{{ `$${frs.fare} - ${frs.dest}` }}</option>
+                    <option v-for="frs in ferry_fares" :key="frs.route + '_' + frs.dest" :value="frs.route">{{ `$${frs.fare} - ${frs.dest}` }}</option>
                   </select>
                 </div>
               </div>
@@ -362,7 +362,7 @@ let mtr_lines = [
  },
  {
    "ld": 8,
-   "ln": "馬鞍山線"
+   "ln": "屯馬線一期"
  },
  {
    "ld": 9,
@@ -374,566 +374,120 @@ let mtr_lines = [
  }
 ];
 let mtr_stns = [
- {
-   "sd": 83,
-   "sn": "堅尼地城",
-   "ld": 1
- },
- {
-   "sd": 82,
-   "sn": "香港大學",
-   "ld": 1
- },
- {
-   "sd": 81,
-   "sn": "西營盤",
-   "ld": 1
- },
- {
-   "sd": 26,
-   "sn": "上環",
-   "ld": 1
- },
- {
-   "sd": 1,
-   "sn": "中環",
-   "ld": 1
- },
- {
-   "sd": 2,
-   "sn": "金鐘",
-   "ld": 1
- },
- {
-   "sd": 27,
-   "sn": "灣仔",
-   "ld": 1
- },
- {
-   "sd": 28,
-   "sn": "銅鑼灣",
-   "ld": 1
- },
- {
-   "sd": 29,
-   "sn": "天后",
-   "ld": 1
- },
- {
-   "sd": 30,
-   "sn": "炮台山",
-   "ld": 1
- },
- {
-   "sd": 31,
-   "sn": "北角",
-   "ld": 1
- },
- {
-   "sd": 32,
-   "sn": "鰂魚涌",
-   "ld": 1
- },
- {
-   "sd": 33,
-   "sn": "太古",
-   "ld": 1
- },
- {
-   "sd": 34,
-   "sn": "西灣河",
-   "ld": 1
- },
- {
-   "sd": 35,
-   "sn": "筲箕灣",
-   "ld": 1
- },
- {
-   "sd": 36,
-   "sn": "杏花邨",
-   "ld": 1
- },
- {
-   "sd": 37,
-   "sn": "柴灣",
-   "ld": 1
- },
- {
-   "sd": 2,
-   "sn": "金鐘",
-   "ld": 2
- },
- {
-   "sd": 86,
-   "sn": "海洋公園",
-   "ld": 2
- },
- {
-   "sd": 87,
-   "sn": "黃竹坑",
-   "ld": 2
- },
- {
-   "sd": 88,
-   "sn": "利東",
-   "ld": 2
- },
- {
-   "sd": 89,
-   "sn": "海怡半島",
-   "ld": 2
- },
- {
-   "sd": 85,
-   "sn": "黃埔",
-   "ld": 3
- },
- {
-   "sd": 84,
-   "sn": "何文田",
-   "ld": 3
- },
- {
-   "sd": 5,
-   "sn": "油麻地",
-   "ld": 3
- },
- {
-   "sd": 6,
-   "sn": "旺角",
-   "ld": 3
- },
- {
-   "sd": 16,
-   "sn": "太子",
-   "ld": 3
- },
- {
-   "sd": 7,
-   "sn": "石硤尾",
-   "ld": 3
- },
- {
-   "sd": 8,
-   "sn": "九龍塘",
-   "ld": 3
- },
- {
-   "sd": 9,
-   "sn": "樂富",
-   "ld": 3
- },
- {
-   "sd": 10,
-   "sn": "黃大仙",
-   "ld": 3
- },
- {
-   "sd": 11,
-   "sn": "鑽石山",
-   "ld": 3
- },
- {
-   "sd": 12,
-   "sn": "彩虹",
-   "ld": 3
- },
- {
-   "sd": 13,
-   "sn": "九龍灣",
-   "ld": 3
- },
- {
-   "sd": 14,
-   "sn": "牛頭角",
-   "ld": 3
- },
- {
-   "sd": 15,
-   "sn": "觀塘",
-   "ld": 3
- },
- {
-   "sd": 38,
-   "sn": "藍田",
-   "ld": 3
- },
- {
-   "sd": 48,
-   "sn": "油塘",
-   "ld": 3
- },
- {
-   "sd": 49,
-   "sn": "調景嶺",
-   "ld": 3
- },
- {
-   "sd": 1,
-   "sn": "中環",
-   "ld": 4
- },
- {
-   "sd": 2,
-   "sn": "金鐘",
-   "ld": 4
- },
- {
-   "sd": 3,
-   "sn": "尖沙咀",
-   "ld": 4
- },
- {
-   "sd": 4,
-   "sn": "佐敦",
-   "ld": 4
- },
- {
-   "sd": 5,
-   "sn": "油麻地",
-   "ld": 4
- },
- {
-   "sd": 6,
-   "sn": "旺角",
-   "ld": 4
- },
- {
-   "sd": 16,
-   "sn": "太子",
-   "ld": 4
- },
- {
-   "sd": 17,
-   "sn": "深水埗",
-   "ld": 4
- },
- {
-   "sd": 18,
-   "sn": "長沙灣",
-   "ld": 4
- },
- {
-   "sd": 19,
-   "sn": "茘枝角",
-   "ld": 4
- },
- {
-   "sd": 20,
-   "sn": "美孚",
-   "ld": 4
- },
- {
-   "sd": 21,
-   "sn": "茘景",
-   "ld": 4
- },
- {
-   "sd": 22,
-   "sn": "葵芳",
-   "ld": 4
- },
- {
-   "sd": 23,
-   "sn": "葵興",
-   "ld": 4
- },
- {
-   "sd": 24,
-   "sn": "大窩口",
-   "ld": 4
- },
- {
-   "sd": 25,
-   "sn": "荃灣",
-   "ld": 4
- },
- {
-   "sd": 31,
-   "sn": "北角",
-   "ld": 5
- },
- {
-   "sd": 32,
-   "sn": "鰂魚涌",
-   "ld": 5
- },
- {
-   "sd": 48,
-   "sn": "油塘",
-   "ld": 5
- },
- {
-   "sd": 49,
-   "sn": "調景嶺",
-   "ld": 5
- },
- {
-   "sd": 50,
-   "sn": "將軍澳",
-   "ld": 5
- },
- {
-   "sd": 51,
-   "sn": "坑口",
-   "ld": 5
- },
- {
-   "sd": 52,
-   "sn": "寶琳",
-   "ld": 5
- },
- {
-   "sd": 57,
-   "sn": "康城",
-   "ld": 5
- },
- {
-   "sd": 39,
-   "sn": "香港",
-   "ld": 6
- },
- {
-   "sd": 40,
-   "sn": "九龍",
-   "ld": 6
- },
- {
-   "sd": 41,
-   "sn": "奧運",
-   "ld": 6
- },
- {
-   "sd": 53,
-   "sn": "南昌",
-   "ld": 6
- },
- {
-   "sd": 21,
-   "sn": "茘景",
-   "ld": 6
- },
- {
-   "sd": 42,
-   "sn": "青衣",
-   "ld": 6
- },
- {
-   "sd": 43,
-   "sn": "東涌",
-   "ld": 6
- },
- {
-   "sd": 54,
-   "sn": "欣澳",
-   "ld": 6
- },
- {
-   "sd": 55,
-   "sn": "迪士尼",
-   "ld": 6
- },
- {
-   "sd": 64,
-   "sn": "紅磡",
-   "ld": 7
- },
- {
-   "sd": 65,
-   "sn": "旺角東",
-   "ld": 7
- },
- {
-   "sd": 8,
-   "sn": "九龍塘",
-   "ld": 7
- },
- {
-   "sd": 67,
-   "sn": "大圍",
-   "ld": 7
- },
- {
-   "sd": 68,
-   "sn": "沙田",
-   "ld": 7
- },
- {
-   "sd": 69,
-   "sn": "火炭",
-   "ld": 7
- },
- {
-   "sd": 70,
-   "sn": "馬場",
-   "ld": 7
- },
- {
-   "sd": 71,
-   "sn": "大學",
-   "ld": 7
- },
- {
-   "sd": 72,
-   "sn": "大埔墟",
-   "ld": 7
- },
- {
-   "sd": 73,
-   "sn": "太和",
-   "ld": 7
- },
- {
-   "sd": 74,
-   "sn": "粉嶺",
-   "ld": 7
- },
- {
-   "sd": 75,
-   "sn": "上水",
-   "ld": 7
- },
- {
-   "sd": 78,
-   "sn": "落馬洲",
-   "ld": 7
- },
- {
-   "sd": 76,
-   "sn": "羅湖",
-   "ld": 7
- },
- {
-   "sd": 67,
-   "sn": "大圍",
-   "ld": 8
- },
- {
-   "sd": 96,
-   "sn": "車公廟",
-   "ld": 8
- },
- {
-   "sd": 97,
-   "sn": "沙田圍",
-   "ld": 8
- },
- {
-   "sd": 98,
-   "sn": "第一城",
-   "ld": 8
- },
- {
-   "sd": 99,
-   "sn": "石門",
-   "ld": 8
- },
- {
-   "sd": 100,
-   "sn": "大水坑",
-   "ld": 8
- },
- {
-   "sd": 101,
-   "sn": "恆安",
-   "ld": 8
- },
- {
-   "sd": 102,
-   "sn": "馬鞍山",
-   "ld": 8
- },
- {
-   "sd": 103,
-   "sn": "烏溪沙",
-   "ld": 8
- },
- {
-   "sd": 64,
-   "sn": "紅磡",
-   "ld": 9
- },
- {
-   "sd": 80,
-   "sn": "尖東",
-   "ld": 9
- },
- {
-   "sd": 111,
-   "sn": "柯士甸",
-   "ld": 9
- },
- {
-   "sd": 53,
-   "sn": "南昌",
-   "ld": 9
- },
- {
-   "sd": 20,
-   "sn": "美孚",
-   "ld": 9
- },
- {
-   "sd": 114,
-   "sn": "荃灣西",
-   "ld": 9
- },
- {
-   "sd": 115,
-   "sn": "錦上路",
-   "ld": 9
- },
- {
-   "sd": 116,
-   "sn": "元朗",
-   "ld": 9
- },
- {
-   "sd": 117,
-   "sn": "朗屏",
-   "ld": 9
- },
- {
-   "sd": 118,
-   "sn": "天水圍",
-   "ld": 9
- },
- {
-   "sd": 119,
-   "sn": "兆康",
-   "ld": 9
- },
- {
-   "sd": 120,
-   "sn": "屯門",
-   "ld": 9
- },
- {
-   "sd": 44,
-   "sn": "香港",
-   "ld": 10
- },
- {
-   "sd": 45,
-   "sn": "九龍",
-   "ld": 10
- },
- {
-   "sd": 46,
-   "sn": "青衣",
-   "ld": 10
- },
- {
-   "sd": 47,
-   "sn": "機場",
-   "ld": 10
- },
- {
-   "sd": 56,
-   "sn": "博覽館",
-   "ld": 10
- }
+{'ld': 10, 'sd': 56, 'sn': '博覽館'},
+{'ld': 10, 'sd': 47, 'sn': '機場'},
+{'ld': 10, 'sd': 46, 'sn': '青衣'},
+{'ld': 10, 'sd': 45, 'sn': '九龍'},
+{'ld': 10, 'sd': 44, 'sn': '香港'},
+{'ld': 6, 'sd': 54, 'sn': '欣澳'},
+{'ld': 6, 'sd': 55, 'sn': '迪士尼'},
+{'ld': 7, 'sd': 76, 'sn': '羅湖'},
+{'ld': 7, 'sd': 75, 'sn': '上水'},
+{'ld': 7, 'sd': 74, 'sn': '粉嶺'},
+{'ld': 7, 'sd': 73, 'sn': '太和'},
+{'ld': 7, 'sd': 72, 'sn': '大埔墟'},
+{'ld': 7, 'sd': 71, 'sn': '大學'},
+{'ld': 7, 'sd': 69, 'sn': '火炭'},
+{'ld': 7, 'sd': 68, 'sn': '沙田'},
+{'ld': 7, 'sd': 67, 'sn': '大圍'},
+{'ld': 7, 'sd': 8, 'sn': '九龍塘'},
+{'ld': 7, 'sd': 65, 'sn': '旺角東'},
+{'ld': 7, 'sd': 64, 'sn': '紅磡'},
+{'ld': 7, 'sd': 78, 'sn': '落馬洲'},
+{'ld': 1, 'sd': 37, 'sn': '柴灣'},
+{'ld': 1, 'sd': 36, 'sn': '杏花邨'},
+{'ld': 1, 'sd': 35, 'sn': '筲箕灣'},
+{'ld': 1, 'sd': 34, 'sn': '西灣河'},
+{'ld': 1, 'sd': 33, 'sn': '太古'},
+{'ld': 1, 'sd': 32, 'sn': '鰂魚涌'},
+{'ld': 1, 'sd': 31, 'sn': '北角'},
+{'ld': 1, 'sd': 30, 'sn': '炮台山'},
+{'ld': 1, 'sd': 29, 'sn': '天后'},
+{'ld': 1, 'sd': 28, 'sn': '銅鑼灣'},
+{'ld': 1, 'sd': 27, 'sn': '灣仔'},
+{'ld': 1, 'sd': 2, 'sn': '金鐘'},
+{'ld': 1, 'sd': 1, 'sn': '中環'},
+{'ld': 1, 'sd': 26, 'sn': '上環'},
+{'ld': 1, 'sd': 81, 'sn': '西營盤'},
+{'ld': 1, 'sd': 82, 'sn': '香港大學'},
+{'ld': 1, 'sd': 83, 'sn': '堅尼地城'},
+{'ld': 3, 'sd': 49, 'sn': '調景嶺'},
+{'ld': 3, 'sd': 48, 'sn': '油塘'},
+{'ld': 3, 'sd': 38, 'sn': '藍田'},
+{'ld': 3, 'sd': 15, 'sn': '觀塘'},
+{'ld': 3, 'sd': 14, 'sn': '牛頭角'},
+{'ld': 3, 'sd': 13, 'sn': '九龍灣'},
+{'ld': 3, 'sd': 12, 'sn': '彩虹'},
+{'ld': 3, 'sd': 11, 'sn': '鑽石山'},
+{'ld': 3, 'sd': 10, 'sn': '黃大仙'},
+{'ld': 3, 'sd': 9, 'sn': '樂富'},
+{'ld': 3, 'sd': 8, 'sn': '九龍塘'},
+{'ld': 3, 'sd': 7, 'sn': '石硤尾'},
+{'ld': 3, 'sd': 16, 'sn': '太子'},
+{'ld': 3, 'sd': 6, 'sn': '旺角'},
+{'ld': 3, 'sd': 5, 'sn': '油麻地'},
+{'ld': 3, 'sd': 84, 'sn': '何文田'},
+{'ld': 3, 'sd': 85, 'sn': '黃埔'},
+{'ld': 8, 'sd': 103, 'sn': '烏溪沙'},
+{'ld': 8, 'sd': 102, 'sn': '馬鞍山'},
+{'ld': 8, 'sd': 101, 'sn': '恆安'},
+{'ld': 8, 'sd': 100, 'sn': '大水坑'},
+{'ld': 8, 'sd': 99, 'sn': '石門'},
+{'ld': 8, 'sd': 98, 'sn': '第一城'},
+{'ld': 8, 'sd': 97, 'sn': '沙田圍'},
+{'ld': 8, 'sd': 96, 'sn': '車公廟'},
+{'ld': 8, 'sd': 67, 'sn': '大圍'},
+{'ld': 8, 'sd': 90, 'sn': '顯徑'},
+{'ld': 8, 'sd': 11, 'sn': '鑽石山'},
+{'ld': 8, 'sd': 91, 'sn': '啟德'},
+{'ld': 6, 'sd': 43, 'sn': '東涌'},
+{'ld': 6, 'sd': 42, 'sn': '青衣'},
+{'ld': 6, 'sd': 21, 'sn': '茘景'},
+{'ld': 6, 'sd': 53, 'sn': '南昌'},
+{'ld': 6, 'sd': 41, 'sn': '奧運'},
+{'ld': 6, 'sd': 40, 'sn': '九龍'},
+{'ld': 6, 'sd': 39, 'sn': '香港'},
+{'ld': 5, 'sd': 52, 'sn': '寶琳'},
+{'ld': 5, 'sd': 51, 'sn': '坑口'},
+{'ld': 5, 'sd': 50, 'sn': '將軍澳'},
+{'ld': 5, 'sd': 49, 'sn': '調景嶺'},
+{'ld': 5, 'sd': 48, 'sn': '油塘'},
+{'ld': 5, 'sd': 32, 'sn': '鰂魚涌'},
+{'ld': 5, 'sd': 31, 'sn': '北角'},
+{'ld': 5, 'sd': 57, 'sn': '康城'},
+{'ld': 4, 'sd': 25, 'sn': '荃灣'},
+{'ld': 4, 'sd': 24, 'sn': '大窩口'},
+{'ld': 4, 'sd': 23, 'sn': '葵興'},
+{'ld': 4, 'sd': 22, 'sn': '葵芳'},
+{'ld': 4, 'sd': 21, 'sn': '茘景'},
+{'ld': 4, 'sd': 20, 'sn': '美孚'},
+{'ld': 4, 'sd': 19, 'sn': '茘枝角'},
+{'ld': 4, 'sd': 18, 'sn': '長沙灣'},
+{'ld': 4, 'sd': 17, 'sn': '深水埗'},
+{'ld': 4, 'sd': 16, 'sn': '太子'},
+{'ld': 4, 'sd': 6, 'sn': '旺角'},
+{'ld': 4, 'sd': 5, 'sn': '油麻地'},
+{'ld': 4, 'sd': 4, 'sn': '佐敦'},
+{'ld': 4, 'sd': 3, 'sn': '尖沙咀'},
+{'ld': 4, 'sd': 2, 'sn': '金鐘'},
+{'ld': 4, 'sd': 1, 'sn': '中環'},
+{'ld': 9, 'sd': 120, 'sn': '屯門'},
+{'ld': 9, 'sd': 119, 'sn': '兆康'},
+{'ld': 9, 'sd': 118, 'sn': '天水圍'},
+{'ld': 9, 'sd': 117, 'sn': '朗屏'},
+{'ld': 9, 'sd': 116, 'sn': '元朗'},
+{'ld': 9, 'sd': 115, 'sn': '錦上路'},
+{'ld': 9, 'sd': 114, 'sn': '荃灣西'},
+{'ld': 9, 'sd': 20, 'sn': '美孚'},
+{'ld': 9, 'sd': 53, 'sn': '南昌'},
+{'ld': 9, 'sd': 111, 'sn': '柯士甸'},
+{'ld': 9, 'sd': 80, 'sn': '尖東'},
+{'ld': 9, 'sd': 64, 'sn': '紅磡'},
+{'ld': 2, 'sd': 2, 'sn': '金鐘'},
+{'ld': 2, 'sd': 86, 'sn': '海洋公園'},
+{'ld': 2, 'sd': 87, 'sn': '黃竹坑'},
+{'ld': 2, 'sd': 88, 'sn': '利東'},
+{'ld': 2, 'sd': 89, 'sn': '海怡半島'}
 ];
 
 function generateItemID(inIndex) {
@@ -1132,7 +686,7 @@ export default {
       if (select_jrn.length == 1) {
         // Jun2020
         let val = select_jrn[0]['AD'] * 0.8;
-        val = Math.round(val * 10) / 10;
+        val = Math.round(val * 10 - 0.5) / 10;
         return val;
       } else {
         return 0

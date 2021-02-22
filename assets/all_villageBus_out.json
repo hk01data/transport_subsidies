@@ -31,10 +31,8 @@
 {"route":"NR334","optr":"珀麗灣客運","type":"villageBus","dest":"馬灣(東灣巴士總站) –香港國際機場(循環線)","fare":"24"},
 {"route":"NR338","optr":"珀麗灣客運","type":"villageBus","dest":"馬灣(東灣巴士總站) –中環(中環二號碼頭)（非居民價）","fare":"22"},
 {"route":"NR338","optr":"珀麗灣客運","type":"villageBus","dest":"馬灣(東灣巴士總站) –中環(中環二號碼頭)（居民八達通價）","fare":"18.8"},
-{"route":"NR35","optr":"陳添旅遊巴士","type":"villageBus","dest":"海濱花園–觀塘（現金價）","fare":"13"},
-{"route":"NR35","optr":"陳添旅遊巴士","type":"villageBus","dest":"海濱花園–觀塘（八達通價）","fare":"12.5"},
-{"route":"NR38","optr":"陳添旅遊巴士","type":"villageBus","dest":"海濱花園–中環/金鐘（現金價）","fare":"16.5"},
-{"route":"NR38","optr":"陳添旅遊巴士","type":"villageBus","dest":"海濱花園–中環/金鐘（八達通價）","fare":"16"},
+{"route":"NR35","optr":"陳添旅遊巴士","type":"villageBus","dest":"海濱花園–觀塘（八達通價）","fare":"13.5"},
+{"route":"NR38","optr":"陳添旅遊巴士","type":"villageBus","dest":"海濱花園–中環/金鐘（八達通價）","fare":"17"},
 {"route":"NR507","optr":"領鋒","type":"villageBus","dest":"大埔龍景別墅–中環","fare":"26"},
 {"route":"NR51","optr":"陽光巴士","type":"villageBus","dest":"大埔康樂園–大埔墟","fare":"6.8"},
 {"route":"NR532","optr":"香港仔專線小巴","type":"villageBus","dest":"大埔洞梓山莊–大埔墟站(循環線)","fare":"7.3"},
@@ -46,5 +44,6 @@
 {"route":"NR917","optr":"草蜢旅運","type":"villageBus","dest":"元朗粉錦公路–灣仔","fare":"34"},
 {"route":"NR918","optr":"草蜢旅運","type":"villageBus","dest":"林錦公路–灣仔","fare":"34"},
 {"route":"NR945","optr":"","type":"villageBus","dest":"元朗益發/大興大厦–北角","fare":"25.5"},
-{"route":"NR945","optr":"","type":"villageBus","dest":"北角–元朗益發/大興大厦","fare":"23.5"}
+{"route":"NR945","optr":"","type":"villageBus","dest":"北角–元朗益發/大興大厦","fare":"23.5"},
+{"route":"KR21","optr":"陳添旅遊巴士","type":"villageBus","dest":"翠竹花園--樂富","fare":"4"}
 ]
