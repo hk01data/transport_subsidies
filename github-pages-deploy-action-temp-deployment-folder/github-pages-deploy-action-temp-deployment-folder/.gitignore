@@ -1,0 +1,8 @@
+node_modules
+sass-cache
+backup
+_current-folder.bat
+
+dist
+dist*
+.DS_Store

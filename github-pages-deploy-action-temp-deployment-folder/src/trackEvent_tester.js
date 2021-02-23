@@ -22,22 +22,22 @@ function getAnonymousId() {
 // Initialize the tracker client
 var myTracker = new trackerClient({
     GA: {
-        trackingId: ["UA-70981149-1", "UA-70981149-36", "UA-125354638-2"] // UA-125354638-2 is the profile for hk01data editorial team
+        trackingId: ["UA-70981149-9", "UA-70981149-36", "UA-67838455-2"] // UA-67838455-2 is the profile for hk01data editorial team
     },
     Piwik: {
-        trackingUrl: "https://track.hk01.com/v1web/piwik.php",  // replace with your piwik tracking url
-        siteId: 6,  // replace with your piwik site ID
+        trackingUrl: "https://track.hktester.com/v1web/piwik.php",  // replace with your piwik tracking url
+        siteId: 5,  // replace with your piwik site ID
         userId: getAnonymousId(), // replace with user ID, should be same as MEMBER_ID/ANONYMOUS_ID
         isSPA: true // if the page is single page application
     }
 }, false);
 
 /* Config the selected article detail */
-const page_path = "/\u793e\u6703\u65b0\u805e/590893/【交通補貼2021-02】";
-const author = "\u8B1D\u5A9B\u5F70, \u9673\u5609\u6167, \u90ED\u66C9\u6674, \u6EAB\u6842\u5A77, \u7C21\u6D69\u5FB7";  // 謝媛彰, 陳嘉慧, 郭曉晴, 溫桂婷, 簡浩德
+const page_path = "/\u793e\u6703\u65b0\u805e/240258/";
+const author = "\u7c21\u6d69\u5fb7, \u6881\u9038\u98a8, \u856d\u8f1d\u6d69";  // 簡浩德 梁逸風 蕭輝浩
 const channel = "\u793e\u6703\u65b0\u805e"; // 社會新聞
 const section = "\u793e\u6703\u65b0\u805e"; // 社會新聞
-const article_id = "590893";
+const article_id = "240258";
 
 function fireArticlePV(url) {
     try {
@@ -63,9 +63,9 @@ function fireArticlePV(url) {
 function fireMapPV(url) {
     try {
         myTracker.disableGA({
-            'UA-70981149-1': true, // staging
+            'UA-70981149-9': true, // staging
             'UA-70981149-36': false, // data team
-            'UA-125354638-2': true // hk01 data
+            'UA-67838455-2': true // hk01 data
         });
 
         // Send Pageview for Map
