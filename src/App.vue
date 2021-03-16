@@ -599,7 +599,9 @@ export default {
       // let pay = 0, min_exp = 400, cap = 300, rate = 0.25;
       // let pay = 0, min_exp = 400, cap = 400, rate = 0.3;
       // 2020 Jun 23 update
-      let pay = 0, min_exp = 200, cap = 400, rate = 0.33;
+      // let pay = 0, min_exp = 200, cap = 400, rate = 0.33;
+      // 2021-03-16 update
+      let pay = 0, min_exp = 200, cap = 500, rate = 0.33;
 
 
       if (min_exp < this.total_fare) {
