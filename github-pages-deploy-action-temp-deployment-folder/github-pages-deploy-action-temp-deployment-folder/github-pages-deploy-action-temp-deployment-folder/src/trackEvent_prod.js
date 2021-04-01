@@ -33,11 +33,11 @@ var myTracker = new trackerClient({
 }, false);
 
 /* Config the selected article detail */
-const page_path = "\u793e\u6703\u65b0\u805e/590893/【交通補貼2021-02】";
-const author = "\u8B1D\u5A9B\u5F70, \u9673\u5609\u6167, \u90ED\u66C9\u6674, \u6EAB\u6842\u5A77, \u7C21\u6D69\u5FB7";  // 謝媛彰, 陳嘉慧, 郭曉晴, 溫桂婷, 簡浩德
+const page_path = "/\u793e\u6703\u65b0\u805e/240258/";
+const author = "\u7c21\u6d69\u5fb7, \u6881\u9038\u98a8, \u856d\u8f1d\u6d69";  // 簡浩德 梁逸風 蕭輝浩
 const channel = "\u793e\u6703\u65b0\u805e"; // 社會新聞
 const section = "\u793e\u6703\u65b0\u805e"; // 社會新聞
-const article_id = "590893";
+const article_id = "240258";
 
 function fireArticlePV(url) {
     try {
@@ -50,7 +50,7 @@ function fireArticlePV(url) {
                 2: section,
                 3: channel,
                 5: article_id
-            }, "https://www.hk01.com/" + page_path, page_path);
+            }, "https://hk01.com/" + page_path, page_path);
 
         console.log("fire Article PV");
     }
