@@ -9,13 +9,21 @@
           </a>
         </p>
         <h2 class="text-center">補貼你有計</h2>
-        <p class="text-muted text-center"><small>交通補貼措施2017</small></p>
+        <!-- 2021 Feb -->
+        <p class="text-muted text-center"><small>交通補貼措施（2021年適用）</small></p>
       </div>
     </header>
 
 
 
     <fieldset class="form-group">
+      <div class="row result">
+        <div class="col-xs-12 text-center">
+          <h4>每月交通總開支：{{ formatPrice(total_fare) }}</h4>
+          <h3>估計可獲補貼：{{ formatPrice(back_pay) }}</h3>
+        </div>
+      </div>
+      
       <div class="row">
         <div class="col-xs-12">
           <label for="two-way">
@@ -23,13 +31,13 @@
           <span v-if="!two_way">來回程不同</span>
           <span>：</span>
           </label>
-          <input id="two-way" type="checkbox" v-model="two_way">
+          <input id="two-way" type="checkbox" v-model="two_way" v-on:change="chg_return">
         </div>
       </div>
 
       <div class="jrn-cont">
       <div class="jrn-track">
-        <div v-for="(value, key) in rows">
+        <div v-for="(value, key) in rows" v-bind:key="key">
           <div class="jrn">
 
             <div class="row">
@@ -38,23 +46,33 @@
               </div>
               <div class="col-xs-12 col-sm-8">
                 <div class="a__option col-xs-6">
-                  <input type="radio" :id="'mtr' + key" value="mtr" v-model="value.travel_method" v-on:change="chg_method">
+                  <input type="radio" :id="'mtr' + key" value="mtr" v-model="value.travel_method" v-on:change="chg_method($event, value)">
                   <label :class="{'active': 'mtr' === value.travel_method}" :for="'mtr' + key">港鐵</label>
                 </div>
 
                 <div class="a__option col-xs-6">
-                  <input type="radio" :id="'bus' + key" value="bus" v-model="value.travel_method" v-on:change="chg_method">
+                  <input type="radio" :id="'bus' + key" value="bus" v-model="value.travel_method" v-on:change="chg_method($event, value)">
                   <label :class="{'active': 'bus' === value.travel_method}" :for="'bus' + key">巴士/專線小巴</label>
                 </div>
 
                 <div class="a__option col-xs-6">
-                  <input type="radio" :id="'monthly' + key" value="monthly" v-model="value.travel_method" v-on:change="chg_method">
+                  <input type="radio" :id="'monthly' + key" value="monthly" v-model="value.travel_method" v-on:change="chg_method($event, value)">
                   <label :class="{'active': 'monthly' === value.travel_method}" :for="'monthly' + key">月票</label>
                 </div>
 
                 <div class="a__option col-xs-6">
-                  <input type="radio" :id="'other' + key" value="other" v-model="value.travel_method" v-on:change="chg_method">
-                  <label :class="{'active': 'other' === value.travel_method}" :for="'other' + key">其他，包括紅色小巴、邨巴、街渡等</label>
+                  <input type="radio" :id="'villagebus' + key" value="villagebus" v-model="value.travel_method" v-on:change="chg_method($event, value)">
+                  <label :class="{'active': 'villagebus' === value.travel_method}" :for="'villagebus' + key">邨巴</label>
+                </div>
+
+                <div class="a__option col-xs-6">
+                  <input type="radio" :id="'boatferry' + key" value="boatferry" v-model="value.travel_method" v-on:change="chg_method($event, value)">
+                  <label :class="{'active': 'boatferry' === value.travel_method}" :for="'boatferry' + key">渡輪/街渡</label>
+                </div>
+
+                <div class="a__option col-xs-6">
+                  <input type="radio" :id="'other' + key" value="other" v-model="value.travel_method" v-on:change="chg_method($event, value)">
+                  <label :class="{'active': 'other' === value.travel_method}" :for="'other' + key">其他，包括紅色小巴等</label>
                 </div>
               </div>
             </div>
@@ -75,8 +93,8 @@
                 <div class="col-xs-6">
                   <label for="mtr_line_from" class="">起點路線</label>
                   <p>
-                  <select id="mtr_line_from" v-model="value.mtr_line_from" v-on:change="chg_line_from">
-                    <option v-for="option in mtr_lines_from()" v-bind:value="option.ld">
+                  <select id="mtr_line_from" v-model="value.mtr_line_from" v-on:change="chg_line_from($event, value)">
+                    <option v-for="(option, key) in mtr_lines_from()" v-bind:value="option.ld" v-bind:key="key">
                       {{ option.ln }}
                     </option>
                   </select>
@@ -87,8 +105,8 @@
                 <div class="col-xs-6">
                   <label for="mtr_stn_from" class="">起點車站</label>
                   <p>
-                  <select id="mtr_stn_from" v-model="value.mtr_stn_from" v-on:change="chg_stn_from">
-                    <option v-for="option in mtr_stns_from(value)" v-bind:value="option.sd">
+                  <select id="mtr_stn_from" v-model="value.mtr_stn_from" v-on:change="chg_stn_from($event, value)">
+                    <option v-for="(option, key) in mtr_stns_from(value)" v-bind:value="option.sd" v-bind:key="key">
                       {{ option.sn }}
                     </option>
                   </select>
@@ -101,8 +119,8 @@
                 <div class="col-xs-6">
                   <label for="mtr_line_to" class="">終點路線</label>
                   <p>
-                  <select id="mtr_line_to" v-model="value.mtr_line_to" v-on:change="chg_line_to">
-                    <option v-for="option in mtr_lines_to()" v-bind:value="option.ld">
+                  <select id="mtr_line_to" v-model="value.mtr_line_to" v-on:change="chg_line_to($event, value)">
+                    <option v-for="(option, key) in mtr_lines_to()" v-bind:value="option.ld" v-bind:key="key">
                       {{ option.ln }}
                     </option>
                   </select>
@@ -113,8 +131,8 @@
                 <div class="col-xs-6">
                   <label for="mtr_stn_to" class="">終點車站</label>
                   <p>
-                  <select id="mtr_stn_to" v-model="value.mtr_stn_to" v-on:change="chg_stn_to">
-                    <option v-for="option in mtr_stns_to(value)" v-bind:value="option.sd">
+                  <select id="mtr_stn_to" v-model="value.mtr_stn_to" v-on:change="chg_stn_to($event, value)">
+                    <option v-for="(option, key) in mtr_stns_to(value)" v-bind:value="option.sd" v-bind:key="key">
                       {{ option.sn }}
                     </option>
                   </select>
@@ -125,6 +143,8 @@
               <div class="row">
                 <div class="col-xs-12 col-sm-4">
                   <p class="">來回票價*： <strong>$ {{ mtr_fee(value) * 2 }}</strong> <small>（單程 $ {{ mtr_fee(value) }}）</small></p>
+                  <!-- Jun2020 -->
+                  <!-- <p class="">來回票價*： <strong>$ {{ formatPrice(mtr_fee(value) * 2 * 0.8) }}</strong> <small>（單程 $ {{ formatPrice(mtr_fee(value) * 0.8)}}）</small></p> -->
                   <p class=""></p>
                 </div>
               </div>
@@ -160,9 +180,9 @@
                     </template>
                   </autocomplete-input>
                   <ul>
-                    <li v-for="(frs, index) in value.bus_fare_options" >
-                      <a class="br-fare" :class="{'active' : frs.active}" href="javascript:void(0);"
-                          @click="pick2(value, {'fare': frs.fare, 'index': index, 'keyword': value.keyword, 'optr': frs.o})">
+                    <li v-for="(frs, index) in value.bus_fare_options" v-bind:key="index">
+                      <a class="br-fare" :class="{'active' : value.bus_fare_options[index].active === 1}" href="javascript:void(0);" :key="frs.dest"
+                          @click="pick2(value, {'fare': frs.fare, 'index': index, 'dest': frs.dest, 'frs': frs})">
                         <span class="br-fare-fee">${{ frs.fare }}</span> {{ frs.dest }}
                       </a>
                     </li>
@@ -181,12 +201,38 @@
                   <label for="duty_expense_30" class="lbl-vc text-right">月費（＄）</label>
                 </div>
                 <div class="col-xs-5 col-sm-7">
-                  <p><input id="duty_expense_30" class="form-control" type="number" step="0.1" placeholder="請輸入金額" min="0" max="600000" v-model="value.duty_expense_30"></p>
+                  <p><input id="duty_expense_30" class="form-control" type="number" step="0.1" placeholder="請輸入金額" min="0" max="600000" v-model="value.duty_expense_30" v-on:change="chg_monthly($event, value)"></p>
                 </div>
               </div>
 
               <div class="row">
 
+              </div>
+            </div>
+
+
+            <div class="villiagebus-section" v-if="'villagebus' == value.travel_method">
+              <div class="row">
+                <div class="col-xs-12">
+                  <select v-on:change="chg_villagebus($event, value)" v-model="value.villagebus_selected">
+                    <option selected disabled value="0">==請選擇路線==</option>
+                    <option v-for="(frs, index) in villagebus_fares" :key="frs.route + '_' + frs.dest" :value="index">{{ `${frs.route} ($${frs.fare}) ${frs.dest}` }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="boatferry-section" v-if="'boatferry' == value.travel_method">
+              <div class="row">
+                <div class="col-xs-12">
+                  <select v-on:change="chg_boatferry($event, value)" v-model="value.boatferry_selected">
+                    <option selected disabled value="0">==請選擇渡輪路線==</option>
+                    <option v-for="frs in boat_fares" :key="frs.route + '_' + frs.dest" :value="frs.route">{{ `$${frs.fare} - ${frs.dest}` }}</option>
+                    <option selected disabled value="0">==請選擇街渡路線==</option>
+                    <option v-for="frs in ferry_fares" :key="frs.route + '_' + frs.dest" :value="frs.route">{{ `$${frs.fare} - ${frs.dest}` }}</option>
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -197,7 +243,7 @@
                   <label for="duty_expense" class="lbl-vc text-right">去程車費（＄）</label>
                 </div>
                 <div class="col-xs-5 col-sm-7">
-                  <p><input id="duty_expense" class="form-control" type="number" step="0.1" placeholder="請輸入金額" min="0" max="600000" v-model="value.duty_expense"></p>
+                  <p><input id="duty_expense" class="form-control" type="number" step="0.1" placeholder="請輸入金額" min="0" max="600000" v-model="value.duty_expense" v-on:change="chg_other($event, value)"></p>
                 </div>
               </div>
 
@@ -256,23 +302,20 @@
           </div>
         </div>
       </div>
-
-      <div class="row result">
-        <div class="col-xs-12 text-center">
-          <h4>每月交通總開支：{{ formatPrice(total_fare) }}</h4>
-          <h2>估計可獲補貼：{{ formatPrice(back_pay) }}</h2>
-        </div>
-      </div>
     </fieldset>
 
     <footer>
       <div class="container">
         <div class="row">
           <div class="col-xs-12 text-center">
+            <!--
             <p><a href="https://carrielamgov.hk01.com/section/%E6%96%BD%E6%94%BF%E8%BF%BD%E8%B9%A4" title="追蹤特首其他施政承諾" class="ext-link" target="_blank">追蹤特首其他施政承諾</a></p>
+            -->
             <hr>
-            <p>資料來源：<br>政府資料一線通、 港鐵公司、相關專營巴士公司網頁</p>
-            <p class="text-muted"><small>補貼金額僅供參考。車資以成人單程八達通計算，未包括港鐵八達通車費97折優惠。機場快線車費不計算即日來回優惠。每月日數假設為30天。</small></p>
+            <p>資料來源：<br>政府資料一線通、運輸署、港鐵公司、相關專營巴士公司網頁</p>
+            <!-- <p class="text-muted"><small>補貼金額僅供參考。車資以成人單程八達通計算，未包括港鐵八達通車費97折優惠。機場快線車費不計算即日來回優惠。每月日數假設為30天。</small></p> -->
+            <p class="text-muted"><small>補貼金額僅供參考。車資以成人單程八達通計算。機場快線車費不計算即日來回優惠。每月日數假設為30天。</small></p>
+
           </div>
         </div>
       </div>
@@ -283,6 +326,8 @@
 <script>
 import vueSlider from 'vue-slider-component';
 import axios from 'axios';
+import * as TrackEvent from './trackEvent_prod.js'
+// import * as TrackEvent from './trackEvent_tester.js'
 require('../assets/sass/style.scss');
 const _ = require('lodash/core');
 
@@ -317,7 +362,7 @@ let mtr_lines = [
  },
  {
    "ld": 8,
-   "ln": "馬鞍山線"
+   "ln": "屯馬線一期"
  },
  {
    "ld": 9,
@@ -329,567 +374,132 @@ let mtr_lines = [
  }
 ];
 let mtr_stns = [
- {
-   "sd": 83,
-   "sn": "堅尼地城",
-   "ld": 1
- },
- {
-   "sd": 82,
-   "sn": "香港大學",
-   "ld": 1
- },
- {
-   "sd": 81,
-   "sn": "西營盤",
-   "ld": 1
- },
- {
-   "sd": 26,
-   "sn": "上環",
-   "ld": 1
- },
- {
-   "sd": 1,
-   "sn": "中環",
-   "ld": 1
- },
- {
-   "sd": 2,
-   "sn": "金鐘",
-   "ld": 1
- },
- {
-   "sd": 27,
-   "sn": "灣仔",
-   "ld": 1
- },
- {
-   "sd": 28,
-   "sn": "銅鑼灣",
-   "ld": 1
- },
- {
-   "sd": 29,
-   "sn": "天后",
-   "ld": 1
- },
- {
-   "sd": 30,
-   "sn": "炮台山",
-   "ld": 1
- },
- {
-   "sd": 31,
-   "sn": "北角",
-   "ld": 1
- },
- {
-   "sd": 32,
-   "sn": "鰂魚涌",
-   "ld": 1
- },
- {
-   "sd": 33,
-   "sn": "太古",
-   "ld": 1
- },
- {
-   "sd": 34,
-   "sn": "西灣河",
-   "ld": 1
- },
- {
-   "sd": 35,
-   "sn": "筲箕灣",
-   "ld": 1
- },
- {
-   "sd": 36,
-   "sn": "杏花邨",
-   "ld": 1
- },
- {
-   "sd": 37,
-   "sn": "柴灣",
-   "ld": 1
- },
- {
-   "sd": 2,
-   "sn": "金鐘",
-   "ld": 2
- },
- {
-   "sd": 86,
-   "sn": "海洋公園",
-   "ld": 2
- },
- {
-   "sd": 87,
-   "sn": "黃竹坑",
-   "ld": 2
- },
- {
-   "sd": 88,
-   "sn": "利東",
-   "ld": 2
- },
- {
-   "sd": 89,
-   "sn": "海怡半島",
-   "ld": 2
- },
- {
-   "sd": 85,
-   "sn": "黃埔",
-   "ld": 3
- },
- {
-   "sd": 84,
-   "sn": "何文田",
-   "ld": 3
- },
- {
-   "sd": 5,
-   "sn": "油麻地",
-   "ld": 3
- },
- {
-   "sd": 6,
-   "sn": "旺角",
-   "ld": 3
- },
- {
-   "sd": 16,
-   "sn": "太子",
-   "ld": 3
- },
- {
-   "sd": 7,
-   "sn": "石硤尾",
-   "ld": 3
- },
- {
-   "sd": 8,
-   "sn": "九龍塘",
-   "ld": 3
- },
- {
-   "sd": 9,
-   "sn": "樂富",
-   "ld": 3
- },
- {
-   "sd": 10,
-   "sn": "黃大仙",
-   "ld": 3
- },
- {
-   "sd": 11,
-   "sn": "鑽石山",
-   "ld": 3
- },
- {
-   "sd": 12,
-   "sn": "彩虹",
-   "ld": 3
- },
- {
-   "sd": 13,
-   "sn": "九龍灣",
-   "ld": 3
- },
- {
-   "sd": 14,
-   "sn": "牛頭角",
-   "ld": 3
- },
- {
-   "sd": 15,
-   "sn": "觀塘",
-   "ld": 3
- },
- {
-   "sd": 38,
-   "sn": "藍田",
-   "ld": 3
- },
- {
-   "sd": 48,
-   "sn": "油塘",
-   "ld": 3
- },
- {
-   "sd": 49,
-   "sn": "調景嶺",
-   "ld": 3
- },
- {
-   "sd": 1,
-   "sn": "中環",
-   "ld": 4
- },
- {
-   "sd": 2,
-   "sn": "金鐘",
-   "ld": 4
- },
- {
-   "sd": 3,
-   "sn": "尖沙咀",
-   "ld": 4
- },
- {
-   "sd": 4,
-   "sn": "佐敦",
-   "ld": 4
- },
- {
-   "sd": 5,
-   "sn": "油麻地",
-   "ld": 4
- },
- {
-   "sd": 6,
-   "sn": "旺角",
-   "ld": 4
- },
- {
-   "sd": 16,
-   "sn": "太子",
-   "ld": 4
- },
- {
-   "sd": 17,
-   "sn": "深水埗",
-   "ld": 4
- },
- {
-   "sd": 18,
-   "sn": "長沙灣",
-   "ld": 4
- },
- {
-   "sd": 19,
-   "sn": "茘枝角",
-   "ld": 4
- },
- {
-   "sd": 20,
-   "sn": "美孚",
-   "ld": 4
- },
- {
-   "sd": 21,
-   "sn": "茘景",
-   "ld": 4
- },
- {
-   "sd": 22,
-   "sn": "葵芳",
-   "ld": 4
- },
- {
-   "sd": 23,
-   "sn": "葵興",
-   "ld": 4
- },
- {
-   "sd": 24,
-   "sn": "大窩口",
-   "ld": 4
- },
- {
-   "sd": 25,
-   "sn": "荃灣",
-   "ld": 4
- },
- {
-   "sd": 31,
-   "sn": "北角",
-   "ld": 5
- },
- {
-   "sd": 32,
-   "sn": "鰂魚涌",
-   "ld": 5
- },
- {
-   "sd": 48,
-   "sn": "油塘",
-   "ld": 5
- },
- {
-   "sd": 49,
-   "sn": "調景嶺",
-   "ld": 5
- },
- {
-   "sd": 50,
-   "sn": "將軍澳",
-   "ld": 5
- },
- {
-   "sd": 51,
-   "sn": "坑口",
-   "ld": 5
- },
- {
-   "sd": 52,
-   "sn": "寶琳",
-   "ld": 5
- },
- {
-   "sd": 57,
-   "sn": "康城",
-   "ld": 5
- },
- {
-   "sd": 39,
-   "sn": "香港",
-   "ld": 6
- },
- {
-   "sd": 40,
-   "sn": "九龍",
-   "ld": 6
- },
- {
-   "sd": 41,
-   "sn": "奧運",
-   "ld": 6
- },
- {
-   "sd": 53,
-   "sn": "南昌",
-   "ld": 6
- },
- {
-   "sd": 21,
-   "sn": "茘景",
-   "ld": 6
- },
- {
-   "sd": 42,
-   "sn": "青衣",
-   "ld": 6
- },
- {
-   "sd": 43,
-   "sn": "東涌",
-   "ld": 6
- },
- {
-   "sd": 54,
-   "sn": "欣澳",
-   "ld": 6
- },
- {
-   "sd": 55,
-   "sn": "迪士尼",
-   "ld": 6
- },
- {
-   "sd": 64,
-   "sn": "紅磡",
-   "ld": 7
- },
- {
-   "sd": 65,
-   "sn": "旺角東",
-   "ld": 7
- },
- {
-   "sd": 8,
-   "sn": "九龍塘",
-   "ld": 7
- },
- {
-   "sd": 67,
-   "sn": "大圍",
-   "ld": 7
- },
- {
-   "sd": 68,
-   "sn": "沙田",
-   "ld": 7
- },
- {
-   "sd": 69,
-   "sn": "火炭",
-   "ld": 7
- },
- {
-   "sd": 70,
-   "sn": "馬場",
-   "ld": 7
- },
- {
-   "sd": 71,
-   "sn": "大學",
-   "ld": 7
- },
- {
-   "sd": 72,
-   "sn": "大埔墟",
-   "ld": 7
- },
- {
-   "sd": 73,
-   "sn": "太和",
-   "ld": 7
- },
- {
-   "sd": 74,
-   "sn": "粉嶺",
-   "ld": 7
- },
- {
-   "sd": 75,
-   "sn": "上水",
-   "ld": 7
- },
- {
-   "sd": 78,
-   "sn": "落馬洲",
-   "ld": 7
- },
- {
-   "sd": 76,
-   "sn": "羅湖",
-   "ld": 7
- },
- {
-   "sd": 67,
-   "sn": "大圍",
-   "ld": 8
- },
- {
-   "sd": 96,
-   "sn": "車公廟",
-   "ld": 8
- },
- {
-   "sd": 97,
-   "sn": "沙田圍",
-   "ld": 8
- },
- {
-   "sd": 98,
-   "sn": "第一城",
-   "ld": 8
- },
- {
-   "sd": 99,
-   "sn": "石門",
-   "ld": 8
- },
- {
-   "sd": 100,
-   "sn": "大水坑",
-   "ld": 8
- },
- {
-   "sd": 101,
-   "sn": "恆安",
-   "ld": 8
- },
- {
-   "sd": 102,
-   "sn": "馬鞍山",
-   "ld": 8
- },
- {
-   "sd": 103,
-   "sn": "烏溪沙",
-   "ld": 8
- },
- {
-   "sd": 64,
-   "sn": "紅磡",
-   "ld": 9
- },
- {
-   "sd": 80,
-   "sn": "尖東",
-   "ld": 9
- },
- {
-   "sd": 111,
-   "sn": "柯士甸",
-   "ld": 9
- },
- {
-   "sd": 53,
-   "sn": "南昌",
-   "ld": 9
- },
- {
-   "sd": 20,
-   "sn": "美孚",
-   "ld": 9
- },
- {
-   "sd": 114,
-   "sn": "荃灣西",
-   "ld": 9
- },
- {
-   "sd": 115,
-   "sn": "錦上路",
-   "ld": 9
- },
- {
-   "sd": 116,
-   "sn": "元朗",
-   "ld": 9
- },
- {
-   "sd": 117,
-   "sn": "朗屏",
-   "ld": 9
- },
- {
-   "sd": 118,
-   "sn": "天水圍",
-   "ld": 9
- },
- {
-   "sd": 119,
-   "sn": "兆康",
-   "ld": 9
- },
- {
-   "sd": 120,
-   "sn": "屯門",
-   "ld": 9
- },
- {
-   "sd": 44,
-   "sn": "香港",
-   "ld": 10
- },
- {
-   "sd": 45,
-   "sn": "九龍",
-   "ld": 10
- },
- {
-   "sd": 46,
-   "sn": "青衣",
-   "ld": 10
- },
- {
-   "sd": 47,
-   "sn": "機場",
-   "ld": 10
- },
- {
-   "sd": 56,
-   "sn": "博覽館",
-   "ld": 10
- }
+{'ld': 10, 'sd': 56, 'sn': '博覽館'},
+{'ld': 10, 'sd': 47, 'sn': '機場'},
+{'ld': 10, 'sd': 46, 'sn': '青衣'},
+{'ld': 10, 'sd': 45, 'sn': '九龍'},
+{'ld': 10, 'sd': 44, 'sn': '香港'},
+{'ld': 6, 'sd': 54, 'sn': '欣澳'},
+{'ld': 6, 'sd': 55, 'sn': '迪士尼'},
+{'ld': 7, 'sd': 76, 'sn': '羅湖'},
+{'ld': 7, 'sd': 75, 'sn': '上水'},
+{'ld': 7, 'sd': 74, 'sn': '粉嶺'},
+{'ld': 7, 'sd': 73, 'sn': '太和'},
+{'ld': 7, 'sd': 72, 'sn': '大埔墟'},
+{'ld': 7, 'sd': 71, 'sn': '大學'},
+{'ld': 7, 'sd': 69, 'sn': '火炭'},
+{'ld': 7, 'sd': 68, 'sn': '沙田'},
+{'ld': 7, 'sd': 67, 'sn': '大圍'},
+{'ld': 7, 'sd': 8, 'sn': '九龍塘'},
+{'ld': 7, 'sd': 65, 'sn': '旺角東'},
+{'ld': 7, 'sd': 64, 'sn': '紅磡'},
+{'ld': 7, 'sd': 78, 'sn': '落馬洲'},
+{'ld': 1, 'sd': 37, 'sn': '柴灣'},
+{'ld': 1, 'sd': 36, 'sn': '杏花邨'},
+{'ld': 1, 'sd': 35, 'sn': '筲箕灣'},
+{'ld': 1, 'sd': 34, 'sn': '西灣河'},
+{'ld': 1, 'sd': 33, 'sn': '太古'},
+{'ld': 1, 'sd': 32, 'sn': '鰂魚涌'},
+{'ld': 1, 'sd': 31, 'sn': '北角'},
+{'ld': 1, 'sd': 30, 'sn': '炮台山'},
+{'ld': 1, 'sd': 29, 'sn': '天后'},
+{'ld': 1, 'sd': 28, 'sn': '銅鑼灣'},
+{'ld': 1, 'sd': 27, 'sn': '灣仔'},
+{'ld': 1, 'sd': 2, 'sn': '金鐘'},
+{'ld': 1, 'sd': 1, 'sn': '中環'},
+{'ld': 1, 'sd': 26, 'sn': '上環'},
+{'ld': 1, 'sd': 81, 'sn': '西營盤'},
+{'ld': 1, 'sd': 82, 'sn': '香港大學'},
+{'ld': 1, 'sd': 83, 'sn': '堅尼地城'},
+{'ld': 3, 'sd': 49, 'sn': '調景嶺'},
+{'ld': 3, 'sd': 48, 'sn': '油塘'},
+{'ld': 3, 'sd': 38, 'sn': '藍田'},
+{'ld': 3, 'sd': 15, 'sn': '觀塘'},
+{'ld': 3, 'sd': 14, 'sn': '牛頭角'},
+{'ld': 3, 'sd': 13, 'sn': '九龍灣'},
+{'ld': 3, 'sd': 12, 'sn': '彩虹'},
+{'ld': 3, 'sd': 11, 'sn': '鑽石山'},
+{'ld': 3, 'sd': 10, 'sn': '黃大仙'},
+{'ld': 3, 'sd': 9, 'sn': '樂富'},
+{'ld': 3, 'sd': 8, 'sn': '九龍塘'},
+{'ld': 3, 'sd': 7, 'sn': '石硤尾'},
+{'ld': 3, 'sd': 16, 'sn': '太子'},
+{'ld': 3, 'sd': 6, 'sn': '旺角'},
+{'ld': 3, 'sd': 5, 'sn': '油麻地'},
+{'ld': 3, 'sd': 84, 'sn': '何文田'},
+{'ld': 3, 'sd': 85, 'sn': '黃埔'},
+{'ld': 8, 'sd': 103, 'sn': '烏溪沙'},
+{'ld': 8, 'sd': 102, 'sn': '馬鞍山'},
+{'ld': 8, 'sd': 101, 'sn': '恆安'},
+{'ld': 8, 'sd': 100, 'sn': '大水坑'},
+{'ld': 8, 'sd': 99, 'sn': '石門'},
+{'ld': 8, 'sd': 98, 'sn': '第一城'},
+{'ld': 8, 'sd': 97, 'sn': '沙田圍'},
+{'ld': 8, 'sd': 96, 'sn': '車公廟'},
+{'ld': 8, 'sd': 67, 'sn': '大圍'},
+{'ld': 8, 'sd': 90, 'sn': '顯徑'},
+{'ld': 8, 'sd': 11, 'sn': '鑽石山'},
+{'ld': 8, 'sd': 91, 'sn': '啟德'},
+{'ld': 6, 'sd': 43, 'sn': '東涌'},
+{'ld': 6, 'sd': 42, 'sn': '青衣'},
+{'ld': 6, 'sd': 21, 'sn': '茘景'},
+{'ld': 6, 'sd': 53, 'sn': '南昌'},
+{'ld': 6, 'sd': 41, 'sn': '奧運'},
+{'ld': 6, 'sd': 40, 'sn': '九龍'},
+{'ld': 6, 'sd': 39, 'sn': '香港'},
+{'ld': 5, 'sd': 52, 'sn': '寶琳'},
+{'ld': 5, 'sd': 51, 'sn': '坑口'},
+{'ld': 5, 'sd': 50, 'sn': '將軍澳'},
+{'ld': 5, 'sd': 49, 'sn': '調景嶺'},
+{'ld': 5, 'sd': 48, 'sn': '油塘'},
+{'ld': 5, 'sd': 32, 'sn': '鰂魚涌'},
+{'ld': 5, 'sd': 31, 'sn': '北角'},
+{'ld': 5, 'sd': 57, 'sn': '康城'},
+{'ld': 4, 'sd': 25, 'sn': '荃灣'},
+{'ld': 4, 'sd': 24, 'sn': '大窩口'},
+{'ld': 4, 'sd': 23, 'sn': '葵興'},
+{'ld': 4, 'sd': 22, 'sn': '葵芳'},
+{'ld': 4, 'sd': 21, 'sn': '茘景'},
+{'ld': 4, 'sd': 20, 'sn': '美孚'},
+{'ld': 4, 'sd': 19, 'sn': '茘枝角'},
+{'ld': 4, 'sd': 18, 'sn': '長沙灣'},
+{'ld': 4, 'sd': 17, 'sn': '深水埗'},
+{'ld': 4, 'sd': 16, 'sn': '太子'},
+{'ld': 4, 'sd': 6, 'sn': '旺角'},
+{'ld': 4, 'sd': 5, 'sn': '油麻地'},
+{'ld': 4, 'sd': 4, 'sn': '佐敦'},
+{'ld': 4, 'sd': 3, 'sn': '尖沙咀'},
+{'ld': 4, 'sd': 2, 'sn': '金鐘'},
+{'ld': 4, 'sd': 1, 'sn': '中環'},
+{'ld': 9, 'sd': 120, 'sn': '屯門'},
+{'ld': 9, 'sd': 119, 'sn': '兆康'},
+{'ld': 9, 'sd': 118, 'sn': '天水圍'},
+{'ld': 9, 'sd': 117, 'sn': '朗屏'},
+{'ld': 9, 'sd': 116, 'sn': '元朗'},
+{'ld': 9, 'sd': 115, 'sn': '錦上路'},
+{'ld': 9, 'sd': 114, 'sn': '荃灣西'},
+{'ld': 9, 'sd': 20, 'sn': '美孚'},
+{'ld': 9, 'sd': 53, 'sn': '南昌'},
+{'ld': 9, 'sd': 111, 'sn': '柯士甸'},
+{'ld': 9, 'sd': 80, 'sn': '尖東'},
+{'ld': 9, 'sd': 64, 'sn': '紅磡'},
+{'ld': 2, 'sd': 2, 'sn': '金鐘'},
+{'ld': 2, 'sd': 86, 'sn': '海洋公園'},
+{'ld': 2, 'sd': 87, 'sn': '黃竹坑'},
+{'ld': 2, 'sd': 88, 'sn': '利東'},
+{'ld': 2, 'sd': 89, 'sn': '海怡半島'}
 ];
+
+function generateItemID(inIndex) {
+  let index = inIndex || 0
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1)
+  }
+  let randID = s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4()
+  return `${randID}-${Date.now()}-${index}`
+}
 
 export default {
   name: 'app',
@@ -898,14 +508,18 @@ export default {
   },
   data () {
     return {
-      sheadline2: "去程交通花費是...",
+      event_cate: 'transubcal',
+      sheadline2: '去程交通花費是...',
       mtr_fares: [],
       bus_fares: [],
-      travel_method: "bus",
-      duty_expense: "",
-      duty_expense_30: "",
+      villagebus_fares: [],
+      boat_fares: [],
+      ferry_fares: [],
+      travel_method: '',
+      duty_expense: '',
+      duty_expense_30: '',
       duty_days: 21,
-      holiday_expense: "",
+      holiday_expense: '',
       holiday_in_count: 1,
       s_max: 30,
       s_min: 0,
@@ -915,21 +529,28 @@ export default {
       mtr_line_to: 1,
       mtr_stn_to: 2,
       bus_pay: 0,
-      bus_route: "",
+      bus_route: '',
       two_way: true,
       rows: [
         {
-          travel_method: "bus",
-          duty_expense: "",
-          duty_expense_30: "",
+          travel_method: 'mtr',
+          duty_expense: '',
+          duty_expense_30: '',
           mtr_line_from: 3,
           mtr_stn_from: 8,
           mtr_line_to: 1,
           mtr_stn_to: 2,
           bus_fare_options: [],
-          bus_pay: 0
+          bus_pay: 0,
+          villagebus_selected: '0',
+          villagebus_pay: 0,
+          boatferry_selected: '0',
+          boatferry_pay: 0,
+          itemID: generateItemID(0)
         }
-      ]
+      ],
+      entrySource: '',
+      firstInteraction: 1
     }
   },
   computed: {
@@ -937,7 +558,7 @@ export default {
       if (this.duty_days < 31) {
         return (30 - this.duty_days)
       } else {
-        return "輸入有問題！"
+        return '輸入有問題！'
       }
     },
     one_day_fee () {
@@ -945,15 +566,19 @@ export default {
       let the_exp = 0;
 
       vm.rows.map(function (o) {
-        if ("mtr" == o.travel_method) {
+        if ('mtr' == o.travel_method) {
           the_exp += parseFloat(vm.mtr_fee(o))
-        } else if ("bus" == o.travel_method) {
+        } else if ('bus' == o.travel_method) {
           the_exp += parseFloat(vm.bus_fee(o))
-        } else if ("monthly" == o.travel_method) {
+        } else if ('villagebus' == o.travel_method) {
+          the_exp += parseFloat(vm.villagebus_fee(o))
+        } else if ('boatferry' == o.travel_method) {
+          the_exp += parseFloat(vm.boatferry_fee(o))
+        } else if ('monthly' == o.travel_method) {
           the_exp += 0
-        } else if ("other" == o.travel_method) {
-          the_exp += ("" === o.duty_expense) ? 0 : parseFloat(o.duty_expense)
-        } else if ("" == the_exp) {
+        } else if ('other' == o.travel_method) {
+          the_exp += ('' === o.duty_expense) ? 0 : parseFloat(o.duty_expense)
+        } else if ('' == the_exp) {
           the_exp += 0
         }
       });
@@ -964,14 +589,19 @@ export default {
       let vm = this;
       let commu = this.one_day_fee * ((vm.two_way) ? 2 : 1) *this.duty_days
       vm.rows.map(function (o) {
-        if ("monthly" == o.travel_method) {
-          commu += ("" === o.duty_expense_30) ? 0 : parseFloat(o.duty_expense_30)
+        if ('monthly' == o.travel_method) {
+          commu += ('' === o.duty_expense_30) ? 0 : parseFloat(o.duty_expense_30)
         }
       });
       return (commu + this.holiday_expense*this.holiday_days*this.holiday_in_count)
     },
     back_pay () {
-      let pay = 0, min_exp = 400, cap = 300, rate = 0.25;
+      // let pay = 0, min_exp = 400, cap = 300, rate = 0.25;
+      // let pay = 0, min_exp = 400, cap = 400, rate = 0.3;
+      // 2020 Jun 23 update
+      let pay = 0, min_exp = 200, cap = 400, rate = 0.33;
+
+
       if (min_exp < this.total_fare) {
         pay = (this.total_fare - min_exp) * rate;
       } else {
@@ -987,21 +617,32 @@ export default {
   methods: {
     formatPrice(value) {
         let val = (value/1).toFixed(1)
-        return "$ " + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        return '$ ' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
     addRow: function (index) {
+      let itemID = generateItemID(index + 1)
       try {
         this.rows.splice(index + 1, 0, {
-          travel_method: "mtr",
-          duty_expense: "",
-          duty_expense_30: "",
+          travel_method: 'mtr',
+          duty_expense: '',
+          duty_expense_30: '',
           mtr_line_from: 3,
           mtr_stn_from: 8,
           mtr_line_to: 1,
           mtr_stn_to: 2,
           bus_fare_options: [],
-          bus_pay: 0
-        });
+          bus_pay: 0,
+          villagebus_selected: '',
+          villagebus_pay: 0,
+          boatferry_selected: '',
+          boatferry_pay: 0,
+          itemID: itemID
+        })
+        this.fireEvent(this.event_cate + '_' + 'trip', 'click', {
+          action: 'add',
+          button: index + 1,
+          trip_id: itemID
+        })
       } catch(e)
       {
         console.log(e);
@@ -1009,14 +650,20 @@ export default {
     },
     removeRow: function (index) {
       if (this.rows.length > 1) {
-        this.rows.splice(index, 1);
+        let itemID = this.rows[index].itemID
+        this.rows.splice(index, 1)
+        this.fireEvent(this.event_cate + '_' + 'trip', 'click', {
+          action: 'remove',
+          button: index,
+          trip_id: itemID
+        })
       }
     },
     headline2 (self) {
       switch (self.travel_method) {
-        case "bus": return "輸入路線查詢票價"
+        case 'bus': return '輸入路線查詢票價'
         break
-        case "monthly": return "輸入月票票價"
+        case 'monthly': return '輸入月票票價'
         break
         default: return this.sheadline2
       }
@@ -1037,7 +684,10 @@ export default {
       let vm = this;
       let select_jrn = _.filter(vm.mtr_fares, { 'SD': self.mtr_stn_from, 'DD': self.mtr_stn_to })
       if (select_jrn.length == 1) {
-        return select_jrn[0]['AD']
+        // Jun2020
+        let val = select_jrn[0]['AD'] * 0.8;
+        val = Math.round(val * 10 - 0.5) / 10;
+        return val;
       } else {
         return 0
       }
@@ -1047,27 +697,71 @@ export default {
 
       return self.bus_pay
     },
-    chg_method (e) {
-      let type = 'method';
-      this.$ga.event('method', 'method-change', 'type-' + this.travel_method, 1)
+    villagebus_fee (self) {
+      let vm = self;
+
+      return self.villagebus_pay;
     },
-    chg_line_from (e) {
-      this.$ga.event('fare', 'fare-change', 'mtr-line-from-' + this.mtr_line_from, 1)
+    boatferry_fee (self) {
+      let vm = self;
+
+      return self.boatferry_pay;
     },
-    chg_stn_from (e) {
-      this.$ga.event('fare', 'fare-change', 'mtr-stn-from-' + this.mtr_stn_from, 1)
+    chg_return (e) {
+      this.fireEvent(this.event_cate + '_' + 'return_trip', 'click', {return_trip: e.target.checked})
     },
-    chg_line_to (e) {
-      this.$ga.event('fare', 'fare-change', 'mtr-line-to-' + this.mtr_line_to, 1)
+    chg_method (e, self) {
+      this.fireEvent(this.event_cate + '_' + 'method', 'click', {type: self.travel_method, trip_id: self.itemID})
     },
-    chg_stn_to (e) {
-      this.$ga.event('fare', 'fare-change', 'mtr-stn-to-' + this.mtr_stn_to, 1)
+    chg_line_from (e, self) {
+      let from = _.filter(mtr_lines, { 'ld': self.mtr_line_from })[0].ln
+      let to = _.filter(mtr_lines, { 'ld': self.mtr_line_to })[0].ln
+      this.fireEvent(this.event_cate + '_' + 'mtr_line', 'select', {from: from, to: to, trip_id: self.itemID})
+    },
+    chg_stn_from (e, self) {
+      let from = _.filter(mtr_stns, { 'sd': self.mtr_stn_from })
+      from = from.length ? from[0].sn : 'undefined'
+      let to = _.filter(mtr_stns, { 'sd': self.mtr_stn_to })
+      to = to.length ? to[0].sn : 'undefined'
+      this.fireEvent(this.event_cate + '_' + 'mtr_stn', 'select', {
+        from: from,
+        to: to,
+        trip_id: self.itemID,
+        oneway_fare: this.mtr_fee({mtr_stn_from: self.mtr_stn_from, mtr_stn_to: self.mtr_stn_to})
+      })
+    },
+    chg_line_to (e, self) {
+      let from = _.filter(mtr_lines, { 'ld': self.mtr_line_from })[0].ln
+      let to = _.filter(mtr_lines, { 'ld': self.mtr_line_to })[0].ln
+      this.fireEvent(this.event_cate + '_' + 'mtr_line', 'select', {from: from, to: to, trip_id: self.itemID})
+    },
+    chg_stn_to (e, self) {
+      let from = _.filter(mtr_stns, { 'sd': self.mtr_stn_from })
+      from = from.length ? from[0].sn : 'undefined'
+      let to = _.filter(mtr_stns, { 'sd': self.mtr_stn_to })
+      to = to.length ? to[0].sn : 'undefined'
+      this.fireEvent(this.event_cate + '_' + 'mtr_stn', 'select', {
+        from: from,
+        to: to,
+        trip_id: self.itemID,
+        oneway_fare: this.mtr_fee({mtr_stn_from: self.mtr_stn_from, mtr_stn_to: self.mtr_stn_to})
+      })
+    },
+    chg_monthly (e, self) {
+      this.fireEvent(this.event_cate + '_' + 'monthly', 'change', {monthly_value: parseFloat(e.target.value), trip_id: self.itemID})
+    },
+    chg_other (e, self) {
+      this.fireEvent(this.event_cate + '_' + 'other', 'change', {oneway_fare: parseFloat(e.target.value), trip_id: self.itemID})
     },
     chg_dutyday (e) {
-      this.$ga.event('duty', 'duty-change', 'duty-days-' + this.duty_days, 1)
+      this.fireEvent(this.event_cate + '_' + 'dutyday', 'change', {dutyday: this.duty_days, holiday: 30 - this.duty_days})
     },
     chg_holiday (e) {
-      this.$ga.event('holiday', 'holiday-change', 'holiday-days-' + this.holiday_expense, 1)
+      let vm = this
+      let holiday_expense = (vm.holiday_expense === '') ? 0 : parseFloat(vm.holiday_expense)
+      this.fireEvent(this.event_cate + '_' + 'holiday_expense', 'change', {
+        holiday_daily_expense: holiday_expense,
+        holiday_total_expenses: (30 - this.duty_days) * holiday_expense})
     },
     onOptionSelect (option) {
       // console.log('Selected option:', option)
@@ -1076,23 +770,197 @@ export default {
       this.bus_pay = 0
     },
     pick1 (self, fare) {
-      // console.log('Selected faressss:', self, fare)
+      // console.log('Selected faressss:', self, fare, fare.f[0].dest)
       self.bus_fare_options = fare.f
       self.bus_route = fare.r
-      if (1 == fare.f.length) {
+      self.bus_optr = fare.o
+      let bus_map = {
+        '九巴': 'kmb',
+        '新巴': 'nwfb',
+        '城巴': 'ctb',
+        '綠色小巴': 'green'
+      };
+      if (1 === fare.f.length) {
         self.bus_pay = fare.f[0].fare
         self.bus_fare_options[0].active = true
-        this.$ga.event('fare', 'bus-change1', 'route-' + fare.o + '-' + self.bus_route + '-' + self.bus_pay, 1)
+        this.fireEvent(this.event_cate + '_' + 'bus_search', 'search', {
+          type: bus_map[fare.o],
+          line: self.bus_route,
+          route: fare.f[0].dest,
+          trip_id: self.itemID,
+          oneway_fare: parseFloat(self.bus_pay)
+        })
+      } else {
+        self.bus_pay = 0
+        this.fireEvent(this.event_cate + '_' + 'bus_search', 'search', {
+          type: bus_map[fare.o],
+          line: self.bus_route,
+          route: fare.f[0].dest,
+          trip_id: self.itemID,
+          oneway_fare: 'undefined'
+        })
       }
     },
     pick2 (self, in_obj) {
-      // console.log('Selected fare:', fare)
-      self.bus_pay = in_obj.fare
-      self.bus_fare_options.map(o => {
-        o.active = false
+      // console.log('Selected fare:', self, in_obj)
+      let newRows = this.rows.slice()
+      let fIndex = -1
+      for (let i = 0; i < this.rows.length; i++) {
+        if (this.rows[i].itemID === self.itemID) {
+          fIndex = i
+        }
+      }
+
+      let newThisRow = newRows[fIndex]
+      let new_bus_fare_options = self.bus_fare_options
+      new_bus_fare_options.map(o => {
+        o.active = 0
       })
-      self.bus_fare_options[in_obj.index].active = true
-      this.$ga.event('fare', 'bus-change2', 'route-' + '九巴' + self.bus_route + '-' + self.bus_fare_options[in_obj.index].fare, 1)
+      new_bus_fare_options[in_obj.index].active = 1
+      newThisRow.bus_fare_options = new_bus_fare_options
+
+      newRows[fIndex] = newThisRow
+      this.rows = newRows
+
+      let oneway_fare = (in_obj.fare.indexOf('免費') === -1) ? parseFloat(in_obj.fare) : 0
+      self.bus_pay = oneway_fare
+
+      let bus_map = {
+        '九巴': 'kmb',
+        '新巴': 'nwfb',
+        '城巴': 'ctb',
+        '綠色小巴': 'green'
+      };
+
+      this.fireEvent(this.event_cate + '_' + 'bus_search', 'select', {
+        type: bus_map[self.bus_optr],
+        line: self.bus_route,
+        section: in_obj.dest,
+        oneway_fare: oneway_fare,
+        trip_id: self.itemID
+      })
+    },
+    chg_villagebus (e, self) {
+      let vm = this;
+      let index = e.target.value;
+      let route = vm.villagebus_fares[index].route;
+      let fare = vm.villagebus_fares[index].fare;
+      let dest = vm.villagebus_fares[index].dest;
+      console.log('chg_villagebus', route, fare, dest, vm.villagebus_fares[index].optr);
+      self.villagebus_pay = parseFloat(fare);
+
+      this.fireEvent(this.event_cate + '_' + 'villagebus', 'select', {
+        type: vm.villagebus_fares[index].optr,
+        line: route,
+        section: dest,
+        oneway_fare: fare,
+        trip_id: self.itemID
+      })
+    },
+    chg_boatferry (e, self) {
+      let vm = this;
+      let index = e.target.value;
+      let arr = [];
+      if (index.indexOf('boat') !== -1) {
+        arr = vm.boat_fares;
+      } else {
+        arr = vm.ferry_fares;
+      }
+      let el = arr.filter(o => '' + o.route === '' + index);
+      let route = '-';
+      let fare = '-';
+      let dest = '-';
+      let optr = '-';
+      if (el.length) {
+        route = el[0].route;
+        fare = el[0].fare;
+        dest = el[0].dest;
+        optr = el[0].optr;
+        self.boatferry_pay = parseFloat(fare);
+      }
+      console.log('chg_boatferry', index, el, optr);
+
+      this.fireEvent(this.event_cate + '_' + 'boatferry', 'select', {
+        type: optr,
+        line: route,
+        section: dest,
+        oneway_fare: fare,
+        trip_id: self.itemID
+      })
+    },
+    detectSource (callback) {
+      let linkText = window.location.href
+      let article_id = (linkText.match(/utm_source=inline_article/)) ? linkText.match(/utm_source=inline_article_(.*?)(&|$|\?)/)[1] : window.location.href
+      this.entrySource = (linkText.match(/#/)) ? linkText.match(/#(.*?)(&|$|\?)/)[1] : 'organic'
+
+      switch (this.entrySource) {
+        case 'article':
+        case 'base':
+        case 'issue':
+          break
+        default:
+          this.entrySource = 'organic'
+          // fireArticlePV(removehash(window.location.href))
+      }
+
+      if (callback) {
+        callback(this.entrySource, article_id)
+      }
+    },
+    // fireEvent (e_c, e_a, e_n) {
+    //   // Use VueAnalytics
+    //   let vm = this
+    //   let holiday_expense = (vm.holiday_expense === '') ? 0 : parseFloat(vm.holiday_expense)
+
+    //   if (vm.firstInteraction === 1 && vm.entrySource !== 'organic' && vm.entrySource !== 'base') {
+    //     vm.firstInteraction--
+    //     vm.$ga.page({
+    //       page: '/#' + vm.entrySource,
+    //       title: document.title,
+    //       location: window.location.href
+    //     })
+    //   }
+    //   vm.$ga.event(e_c, e_a, {
+    //     ...e_n,
+    //     anonymous_id: TrackEvent.get
+    //   }, 1)
+    //   vm.$ga.event(vm.event_cate + '_' + 'result', 'change', {
+    //     return_trip: vm.two_way,
+    //     trips: vm.rows,
+    //     dutyday: vm.duty_days,
+    //     holiday: 30 - vm.duty_days,
+    //     holiday_daily_expense: holiday_expense,
+    //     holiday_total_expenses: (30 - vm.duty_days) * holiday_expense,
+    //     total_expense: parseFloat(parseFloat(vm.total_fare).toFixed(1)),
+    //     total_subsidy: parseFloat(parseFloat(vm.back_pay).toFixed(1))
+    //   }, 1)
+    // },
+    fireEvent (e_c, e_a, e_n) {
+      let vm = this
+      let holiday_expense = (vm.holiday_expense === '') ? 0 : parseFloat(vm.holiday_expense)
+
+      if (vm.firstInteraction === 1 && vm.entrySource !== 'organic' && vm.entrySource !== 'base') {
+        vm.firstInteraction--
+        console.log(`[firstInteraction] `, vm.entrySource)
+        TrackEvent.fireArticlePV(TrackEvent.removehash(window.location.href))
+      }
+      let newE_n = e_n
+      newE_n['anonymous_id'] = TrackEvent.getAnonymousId()
+      newE_n['ts'] = Date.now()
+
+      TrackEvent.fireEvent(e_c, e_a, newE_n, 1)
+      TrackEvent.fireEvent(vm.event_cate + '_' + 'result', 'change', {
+        return_trip: vm.two_way,
+        trip_id: vm.rows.map(o => o.itemID),
+        dutyday: vm.duty_days,
+        holiday: 30 - vm.duty_days,
+        holiday_daily_expense: holiday_expense,
+        holiday_total_expenses: (30 - vm.duty_days) * holiday_expense,
+        total_expense: parseFloat(parseFloat(vm.total_fare).toFixed(1)),
+        total_subsidy: parseFloat(parseFloat(vm.back_pay).toFixed(1)),
+        anonymous_id: newE_n['anonymous_id'],
+        ts: newE_n['ts']
+      }, 1)
     }
   },
   created: function () {
@@ -1110,11 +978,11 @@ export default {
     .then(function (response) {
       vm.bus_fares = response.data.map((o) => {
         let bus_map = {
-          "kmb" : "九巴",
-          "nwfb" : "新巴",
-          "ctb" : "城巴"
+          'kmb' : '九巴',
+          'nwfb' : '新巴',
+          'ctb' : '城巴'
         };
-        o.optr = (o.optr.toLowerCase() in bus_map) ? bus_map[o.optr.toLowerCase()] :"綠色小巴"
+        o.optr = (o.optr.toLowerCase() in bus_map) ? bus_map[o.optr.toLowerCase()] :'綠色小巴'
 
         return o
       })
@@ -1122,6 +990,74 @@ export default {
     .catch(function (error) {
       console.log(error);
     });
+
+    axios.get('assets/all_villageBus_out.json')
+    .then(function (response) {
+      vm.villagebus_fares = response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    axios.get('assets/boat.json')
+    .then(function (response) {
+      vm.boat_fares = response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    axios.get('assets/ferry.json')
+    .then(function (response) {
+      vm.ferry_fares = response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  },
+  mounted () {
+    let vm = this
+
+    TrackEvent.fireMapPV(TrackEvent.removehash(window.location.href))
+
+    // When the user scrolls the page, execute myFunction 
+    window.onscroll = function() {myFunction()};
+
+    // Get the navbar
+    var navbar = document.querySelector(".result");
+
+    // Get the offset position of the navbar
+    var sticky = navbar.offsetTop;
+
+    // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
+    function myFunction() {
+      if (window.pageYOffset >= sticky) {
+        navbar.classList.add("sticky")
+      } else {
+        navbar.classList.remove("sticky");
+      }
+    }
+
+
+    // onAnalyticsReady
+    vm.detectSource(function (source, article_id) {
+      if (source === 'organic') {
+        // // Use VueAnalytics
+        // vm.$ga.page({
+        //   page: '/',
+        //   title: document.title,
+        //   location: window.location.href
+        // })
+        console.log(`[AFTER] `, source)
+        TrackEvent.fireArticlePV(TrackEvent.removehash(window.location.href))
+      }
+      TrackEvent.fireEvent(vm.event_cate + '_landing', 'view', {
+        article_id: article_id,
+        source: source,
+        anonymous_id: TrackEvent.getAnonymousId(),
+        ts: Date.now()
+      })
+    })
   }
 }
 </script>

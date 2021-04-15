@@ -143,8 +143,8 @@
               <div class="row">
                 <div class="col-xs-12 col-sm-4">
                   <p class="">來回票價*： <strong>$ {{ mtr_fee(value) * 2 }}</strong> <small>（單程 $ {{ mtr_fee(value) }}）</small></p>
-                  <!-- Jun2020 -->
-                  <!-- <p class="">來回票價*： <strong>$ {{ formatPrice(mtr_fee(value) * 2 * 0.8) }}</strong> <small>（單程 $ {{ formatPrice(mtr_fee(value) * 0.8)}}）</small></p> -->
+                  <!-- APR2021 -->
+                  <!-- <p class="">來回票價*： <strong>$ {{ formatPrice(mtr_fee(value) * 2 * 0.95) }}</strong> <small>（單程 $ {{ formatPrice(mtr_fee(value) * 0.95)}}）</small></p> -->
                   <p class=""></p>
                 </div>
               </div>
@@ -159,8 +159,9 @@
                       <article class="media">
                         <figure class="media-left" :class="{
                           'red': '九巴' === option.optr.toLowerCase(),
-                          'orange': '新巴' === option.optr.toLowerCase(),
-                          'purple': '城巴' === option.optr.toLowerCase(),
+                          'blue': '新大嶼山' === option.optr.toLowerCase(),
+                          'orange': '龍運' === option.optr.toLowerCase(),
+                          'purple': '新巴/城巴' === option.optr.toLowerCase(),
                           'green': 'minibus' === option.type.toLowerCase()
                         }">
                           <p class="image is-64x64">
@@ -687,7 +688,7 @@ export default {
       let select_jrn = _.filter(vm.mtr_fares, { 'SD': self.mtr_stn_from, 'DD': self.mtr_stn_to })
       if (select_jrn.length == 1) {
         // Jun2020
-        let val = select_jrn[0]['AD'] * 0.8;
+        let val = select_jrn[0]['AD'] * 0.95;
         val = Math.round(val * 10 - 0.5) / 10;
         return val;
       } else {
@@ -778,8 +779,9 @@ export default {
       self.bus_optr = fare.o
       let bus_map = {
         '九巴': 'kmb',
-        '新巴': 'nwfb',
-        '城巴': 'ctb',
+        '新巴/城巴': 'nwfb/ctb',
+        '新大嶼山': 'nlb',
+        '龍運':'lwb',
         '綠色小巴': 'green'
       };
       if (1 === fare.f.length) {
@@ -829,8 +831,9 @@ export default {
 
       let bus_map = {
         '九巴': 'kmb',
-        '新巴': 'nwfb',
-        '城巴': 'ctb',
+        '新巴/城巴': 'nwfb/ctb',
+        '新大嶼山': 'nlb',
+        '龍運':'lwb',
         '綠色小巴': 'green'
       };
 
@@ -981,8 +984,9 @@ export default {
       vm.bus_fares = response.data.map((o) => {
         let bus_map = {
           'kmb' : '九巴',
-          'nwfb' : '新巴',
-          'ctb' : '城巴'
+          'nwfb/ctb' : '新巴/城巴',
+          'nlb' : '新大嶼山',
+          'lwb' : '龍運'
         };
         o.optr = (o.optr.toLowerCase() in bus_map) ? bus_map[o.optr.toLowerCase()] :'綠色小巴'
 
