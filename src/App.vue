@@ -606,7 +606,7 @@ export default {
       // 2021-12-24 update
       //let pay = 0, min_exp = 200, cap = 400, rate = 0.33;
       // 2022-02-25 update
-      let pay = 0, min_exp = 400, cap = 400, rate = 0.33;
+      //let pay = 0, min_exp = 400, cap = 400, rate = 0.33;
       // 2022-04-29 update
       let pay = 0, min_exp = 200, cap = 500, rate = 0.33;
 
