@@ -3,35 +3,35 @@
   "optr": "翠華船務",
   "type": "villageBus",
   "dest": "馬料水↔東平洲",
-  "fare": 90
+  "fare": 100
 },
 {
   "route": "boat-2",
   "optr": "翠華船務",
   "type": "villageBus",
   "dest": "馬料水↔塔門（星期一至五）",
-  "fare": 18
+  "fare": 20
 },
 {
   "route": "boat-3",
   "optr": "翠華船務",
   "type": "villageBus",
   "dest": "馬料水↔塔門（星期六、日及公眾假期）",
-  "fare": 28
+  "fare": 30
 },
 {
   "route": "boat-4",
   "optr": "翠華船務",
   "type": "villageBus",
   "dest": "塔門↔黃石碼頭（星期一至五）",
-  "fare": 9.5
+  "fare": 11
 },
 {
   "route": "boat-5",
   "optr": "翠華船務",
   "type": "villageBus",
   "dest": "塔門↔黃石碼頭（星期六、日及公眾假期）",
-  "fare": 14
+  "fare": 16
 },
 {
   "route": "boat-6",

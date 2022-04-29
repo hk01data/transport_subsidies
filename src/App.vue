@@ -9,8 +9,8 @@
           </a>
         </p>
         <h2 class="text-center">補貼你有計</h2>
-        <!-- 2021 Feb -->
-        <p class="text-muted text-center"><small>交通補貼措施（2021年適用）</small></p>
+        <!-- 2022 Jan -->
+        <p class="text-muted text-center"><small>交通補貼措施（2022年適用）</small></p>
       </div>
     </header>
 
@@ -602,8 +602,13 @@ export default {
       // 2020 Jun 23 update
       // let pay = 0, min_exp = 200, cap = 400, rate = 0.33;
       // 2021-03-16 update
+      //let pay = 0, min_exp = 200, cap = 500, rate = 0.33;
+      // 2021-12-24 update
+      //let pay = 0, min_exp = 200, cap = 400, rate = 0.33;
+      // 2022-02-25 update
+      let pay = 0, min_exp = 400, cap = 400, rate = 0.33;
+      // 2022-04-29 update
       let pay = 0, min_exp = 200, cap = 500, rate = 0.33;
-
 
       if (min_exp < this.total_fare) {
         pay = (this.total_fare - min_exp) * rate;
